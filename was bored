@@ -1,0 +1,107 @@
+getgenv().autofarm = false
+getgenv().noclip = false
+local npcTable = {}
+local ts = game:GetService("TweenService")
+local HumanoidRootPart = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+
+
+for _,v in pairs(game:GetService("Workspace")["_Mob"]:GetChildren()) do
+    if v:IsA("Model")  then
+        table.insert(npcTable, v.Name) 
+    end
+ end
+ local function noclip()
+    game:GetService("RunService").Stepped:Connect(function()
+        if getgenv().noclip then
+            pcall(function()
+                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                        v.CanCollide = false
+                    end
+                end
+            end)
+        else
+            pcall(function()
+                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                        v.CanCollide = true
+    
+        end
+    
+     end
+    end)
+    end
+    end)
+    end
+
+ local function Tween(part, endpos, speed)
+    spawn(function()
+    if part and endpos then
+        local Time = (endpos - part.Position).magnitude/speed
+        local Info = TweenInfo.new(Time, Enum.EasingStyle.Linear)
+        local Tween = ts:Create(part,Info,{CFrame = CFrame.new(endpos.X,endpos.Y,endpos.Z) * CFrame.new(0,position,0) })
+        Tween:Play()
+        wait(Time)
+    end
+end)
+end 
+
+local function autofarm()
+spawn(function()
+if getgenv().autofarm == true then  
+while getgenv().autofarm  do task.wait()
+    if game:GetService("Workspace")["_Mob"]:FindFirstChild(npc) then
+        while game:GetService("Workspace")["_Mob"]:FindFirstChild(npc) do task.wait()
+            game:GetService("ReplicatedStorage").Document.DevilFruit_Event.OneEvent:FireServer("Combat")
+
+            Tween((game.Players.LocalPlayer.Character.HumanoidRootPart), (game:GetService("Workspace")["_Mob"][npc].HumanoidRootPart.Position), (speed))
+
+        end
+    else
+        return
+
+    end
+end
+
+else
+    return
+end
+
+end)
+end
+
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+
+local Window = Library.CreateLib("Autofarm", "DarkTheme")
+local Tab = Window:NewTab("Farm")
+local Section = Tab:NewSection("Farming")
+
+Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().autofarm = true
+    else
+        getgenv().autofarm = false
+    end
+    autofarm()
+end)
+
+Section:NewDropdown("DropdownText", "DropdownInf", npcTable, function(currentOption)
+    npc = currentOption
+end)
+Section:NewSlider("Position", "Position", 12, -12, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    position = s
+end)
+Section:NewSlider("Tween speed", "Position", 350, 100, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    speed = s
+end)
+
+Section:NewToggle("Noclip", "ToggleInfo", function(state)
+    if state then
+        getgenv().noclip = true
+    else
+        getgenv().noclip = false
+    end
+    noclip()
+end)
+
