@@ -1,5 +1,7 @@
 getgenv().autofarm = true
 getgenv().noclip = false
+getgenv().killaura = true
+getgenv().killauraford = true
 local npcTable = {}
 local areaTable = {}
 local mobTable = {
@@ -103,12 +105,13 @@ while getgenv().autofarm == true  do task.wait()
     if game:GetService("Workspace").LivingThings:FindFirstChild(mob)   then
         if game:GetService("Workspace").LivingThings[mob].Humanoid.Health > 1 then
             while getgenv().autofarm == true  do task.wait()
-            game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
+            
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,0,position)
             end
         elseif game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 1 then
-            while getgenv().autofarm == true  do task.wait()
-            game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
+            while game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 1  do task.wait()
+                game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
+
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,0,position)
             end
         end
@@ -124,6 +127,32 @@ end
 
 end)
 end
+local function killaurafordemons()
+    spawn(function()
+if getgenv().killauraford == true then
+while getgenv().killauraford do task.wait()
+    game:GetService("Players").LocalPlayer.Character.Character.Remotes.M1:FireServer()
+end
+else
+    return
+end
+end)
+end
+
+
+local function killaura()
+    spawn(function()
+    if getgenv().killaura == true then
+    while getgenv().killaura do task.wait()
+        game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
+    end
+    else
+        return
+    end
+    end)
+end
+
+
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("Some farming by Mac#0014", "DarkTheme")
@@ -140,7 +169,25 @@ Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
         autofarm()
     end
 end)
+Section:NewToggle("Killaura (use as demon) toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().killauraford = true 
+        killaurafordemons()
+    else
+        getgenv().killauraford = false
+        killaurafordemons()
+    end
+end)
 
+Section:NewToggle("Killaura (use as slayer) toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().killaura = true 
+        killaura()
+    else
+        getgenv().killaura = false
+        killaura()
+    end
+end)
 
 Section:NewDropdown("Choose mob to farm", "DropdownInf", mobTable, function(currentOption)
     mob = currentOption
@@ -186,4 +233,8 @@ end)
 Section:NewButton("Instant slayer (need 100 money)", "ButtonInfo", function()
     instantslayer()
 end)
+local Tab = Window:NewTab("Ui settings")
+local Section = Tab:NewSection("Ui binds")
+
+
 
