@@ -1,0 +1,189 @@
+getgenv().autofarm = true
+getgenv().noclip = false
+local npcTable = {}
+local areaTable = {}
+local mobTable = {
+
+"Slayer1",
+"Demon1",
+"Demon2",
+"Boulder",
+"TypeZero"
+
+}
+
+local function findkey()
+if game:GetService("Workspace").Keys:FindFirstChild("Key") then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Keys.Key.CD.CFrame
+end
+end
+
+local function haori()
+    game:GetService("ReplicatedStorage").Remotes.GetTailorMenu:FireServer()
+end
+local function instantslayer()
+   
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PurchaseItem"):FireServer("Nichirin Katana")
+    
+end
+
+
+local function noclip() -- simple noclip function self explanatory 
+    game:GetService("RunService").Stepped:Connect(function()
+        if getgenv().noclip then
+            pcall(function()
+                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                        v.CanCollide = false
+                    end
+                end
+            end)
+        else
+            pcall(function()
+                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                        v.CanCollide = true
+   
+        end
+   
+     end
+    end)
+    end
+    end)
+    end
+
+local function npcrefresh()
+    spawn(function()
+for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do --same thing as in mobs
+    if v:IsA("Model")  then
+        table.insert(npcTable, v.Name)
+    end
+ end
+end)
+end
+
+local function area()
+    spawn(function()
+for _,v in pairs(game:GetService("Workspace").Locations:GetChildren()) do --same thing as in mobs
+    if v:IsA("Part") then
+        table.insert(areaTable, v.Name)
+    end
+ end
+end)
+end
+
+area()
+npcrefresh()
+
+
+local function area1()
+if game:GetService("Workspace").Locations:FindFirstChild(Area) then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Locations[Area].CFrame
+else 
+    return
+end
+end
+
+local function npc()
+
+    if game:GetService("Workspace").NPCS:FindFirstChild(Npc) then
+        
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").NPCS[Npc].HumanoidRootPart.CFrame
+    else
+        return
+    end
+    
+    end
+
+
+local function autofarm()
+spawn(function()
+if getgenv().autofarm == true  then
+while getgenv().autofarm == true  do task.wait()
+    if game:GetService("Workspace").LivingThings:FindFirstChild(mob)   then
+        if game:GetService("Workspace").LivingThings[mob].Humanoid.Health > 1 then
+            while getgenv().autofarm == true  do task.wait()
+            game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,0,position)
+            end
+        elseif game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 1 then
+            while getgenv().autofarm == true  do task.wait()
+            game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,0,position)
+            end
+        end
+    else
+        return
+    end
+end
+
+else
+    return
+
+end
+
+end)
+end
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Some farming by Mac#0014", "DarkTheme")
+local Tab = Window:NewTab("Autofarms")
+local Section = Tab:NewSection("Autofarms")
+
+
+Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().autofarm = true 
+        autofarm()
+    else
+        getgenv().autofarm = false
+        autofarm()
+    end
+end)
+
+
+Section:NewDropdown("Choose mob to farm", "DropdownInf", mobTable, function(currentOption)
+    mob = currentOption
+end)
+Section:NewSlider("Position", "SliderInfo", 10, -10, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    position = s
+end)
+
+local Tab = Window:NewTab("Teleports")
+local Section = Tab:NewSection("Npc teleports")
+
+Section:NewDropdown("Choose npc to tp to", "DropdownInf", npcTable, function(currentOption)
+    Npc = currentOption
+    npc()
+end)
+local Section = Tab:NewSection("Area teleports")
+Section:NewDropdown("Choose area to tp to", "DropdownInf", areaTable, function(currentOption)
+    Area = currentOption
+    area1()
+end)
+
+
+local Tab = Window:NewTab("Misc")
+local Section = Tab:NewSection("Some stuff")
+
+Section:NewToggle("Noclip toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().noclip = true
+        noclip()
+    else
+        getgenv().noclip = false
+        noclip()
+    end
+end)
+Section:NewButton("Instant teleport to key", "ButtonInfo", function()
+   findkey()
+end)
+
+Section:NewButton("Free custom haori", "ButtonInfo", function()
+    haori()
+end)
+
+Section:NewButton("Instant slayer (need 100 money)", "ButtonInfo", function()
+    instantslayer()
+end)
+
