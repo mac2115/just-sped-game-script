@@ -236,5 +236,7 @@ end)
 local Tab = Window:NewTab("Ui settings")
 local Section = Tab:NewSection("Ui binds")
 
-
+Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
+	Library:ToggleUI()
+end)
 
