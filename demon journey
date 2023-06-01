@@ -4,6 +4,8 @@ getgenv().killaura = true
 getgenv().killauraford = true
 getgenv().antiafk = true
 getgenv().walkspeed = true
+getgenv().autoequip = true 
+local toolTable = {}
 local npcTable = {}
 local areaTable = {}
 local mobTable = {
@@ -260,11 +262,35 @@ for _,v in pairs(game:GetService("Workspace").Locations:GetChildren()) do --same
  end
 end)
 end
-
+local function toolrefresh()
+    spawn(function()
+for _,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do --same thing as in mobs
+    if v:IsA("Tool")  then
+        table.insert(toolTable, v.Name)
+    end
+ end
+end)
+end
+toolrefresh()
 area()
 npcrefresh()
 
+local function autoequip()
+spawn(function()
+if getgenv().autoequip == true then
+while getgenv().autoequip do task.wait()
+    for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v.name == tool then
+            v.Parent = game.Players.LocalPlayer.Character
+        end
+    end
 
+end
+else
+    return
+end
+end)
+end
 local function area1()
 if game:GetService("Workspace").Locations:FindFirstChild(Area) then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Locations[Area].CFrame
@@ -413,6 +439,20 @@ end)
 
 local Tab = Window:NewTab("Misc")
 local Section = Tab:NewSection("Some stuff")
+Section:NewToggle("Autoequip toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().autoequip = true
+        autoequip()
+    else
+        getgenv().autoequip = false
+    autoequip()
+    end
+end)
+Section:NewDropdown("Choose tool to equip", "DropdownInf", toolTable, function(currentOption)
+    tool = currentOption
+   
+end)
+
 
 Section:NewToggle("Noclip toggle", "ToggleInfo", function(state)
     if state then
@@ -423,6 +463,7 @@ Section:NewToggle("Noclip toggle", "ToggleInfo", function(state)
         noclip()
     end
 end)
+
 Section:NewToggle("Antiafk toggle", "ToggleInfo", function(state)
     if state then
         getgenv().antiafk = true
