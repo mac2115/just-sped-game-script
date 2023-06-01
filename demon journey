@@ -5,6 +5,7 @@ getgenv().killauraford = true
 getgenv().antiafk = true
 getgenv().walkspeed = true
 getgenv().autoequip = true 
+getgenv().findkey = true
 local toolTable = {}
 local npcTable = {}
 local areaTable = {}
@@ -204,8 +205,15 @@ end)
 end
 
 local function findkey()
-if game:GetService("Workspace").Keys:FindFirstChild("Key") then
+    if getgenv().findkey == true then
+        while getgenv().findkey do task.wait()
+if game:GetService("Workspace").Keys:FindFirstChild("Key")  then
+    getgenv().autofarm = false
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Keys.Key.CD.CFrame
+end
+end
+else
+    return
 end
 end
 
@@ -491,11 +499,17 @@ Section:NewButton("Antisunburn", "ButtonInfo", function()
     antisunburn()
  end)
  
-
-
-Section:NewButton("Instant teleport to key", "ButtonInfo", function()
-   findkey()
+ Section:NewToggle("Key teleport toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().findkey = true
+       findkey()
+    else
+        getgenv().findkey = false
+        findkey()
+    end
 end)
+
+
 
 Section:NewButton("Free custom haori", "ButtonInfo", function()
     haori()
