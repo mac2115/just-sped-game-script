@@ -1,0 +1,348 @@
+getgenv().autofarm = true
+getgenv().autoquest = true
+getgenv().platform  = true
+getgenv().noclip = true
+local Part = Instance.new("Part", workspace)
+local mobTable = {"Giant Sand Kip",
+"Sand Kip",
+"Turtling",
+"TheFirstDesire",
+"Maxwell",
+"Giant Evil Leech",
+"Abyssal Watcher",
+"Snow Dweller",
+"Rock Pig",
+"Purple Goblin",
+"Rat Kin",
+"Water Turtle",
+"Fire Bird",
+"Cyclops"
+,"Sand Onion"
+,"Stone Slicer",
+"Goblin Archer",
+"Cave Goblin",
+"Abyssal Giant",
+"Cave Sha",
+"Abyssal Skinner",
+"Bandit Gunner",
+"Electro Raptor",
+"Abyssal Puppet",
+"Abyssal Archer",
+"Demon Grunt",
+"Cyclops Bot",
+"Darkling",
+"Cave Rex"
+,
+"Evil Leech",
+"Stone Golem"
+
+
+}
+local questTable = {}
+local areaTable = {}
+
+local PlaceID = game.PlaceId
+local AllIDs = {}
+local foundAnything = ""
+local actualHour = os.date("!*t").hour
+local Deleted = false
+
+local File = pcall(function()
+    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+end)
+if not File then
+    table.insert(AllIDs, actualHour)
+    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+end
+
+ local function TPReturner()
+    local Site;
+    if foundAnything == "" then
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+    else
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+    end
+    local ID = ""
+    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+        foundAnything = Site.nextPageCursor
+    end
+    local num = 0;
+    for i,v in pairs(Site.data) do
+        local Possible = true
+        ID = tostring(v.id)
+        if tonumber(v.maxPlayers) > tonumber(v.playing) then
+            for _,Existing in pairs(AllIDs) do
+                if num ~= 0 then
+                    if ID == tostring(Existing) then
+                        Possible = false
+                    end
+                else
+                    if tonumber(actualHour) ~= tonumber(Existing) then
+                        local delFile = pcall(function()
+                            delfile("NotSameServers.json")
+                            AllIDs = {}
+                            table.insert(AllIDs, actualHour)
+                        end)
+                    end
+                end
+                num = num + 1
+            end
+            if Possible == true then
+                table.insert(AllIDs, ID)
+                wait()
+                pcall(function()
+                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                    wait()
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+                end)
+                wait(4)
+            end
+        end
+    end
+end
+
+local function noclip()
+    game:GetService("RunService").Stepped:Connect(
+        function()
+            if getgenv().noclip then
+                pcall(
+                    function()
+                        for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                            if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                                v.CanCollide = false
+                            end
+                        end
+                    end
+                )
+            else
+                pcall(
+                    function()
+                        for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                            if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                                v.CanCollide = true
+                            end
+                        end
+                    end
+                )
+            end
+        end
+    )
+end
+
+local function lowgraphics()
+    for _,v in pairs(workspace:GetDescendants()) do
+        if v.ClassName == "Part"
+        or v.ClassName == "SpawnLocation"
+        or v.ClassName == "WedgePart"
+        or v.ClassName == "Terrain"
+        or v.ClassName == "MeshPart" then
+        v.Material = "Plastic"
+        end
+        end
+        
+        for _,v in pairs(workspace:GetDescendants()) do
+        if v.ClassName == "Decal"
+        or v.ClassName == "Texture" then
+        v:Destroy()
+        end
+        end
+
+end
+
+
+ local function serverhop()
+    while wait() do
+        pcall(function()
+            TPReturner()
+            if foundAnything ~= "" then
+                TPReturner()
+            end
+        end)
+    end
+end
+
+
+local function antiafk()
+    spawn(function()
+
+    for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
+        v:Disable()
+    end
+end)
+
+
+end
+
+local function area()
+    spawn(function()
+for _,v in pairs(game:GetService("Workspace").Main.Areas:GetChildren()) do --same thing as in mobs
+    if v:IsA("Part") then
+        table.insert(areaTable, v.Name)
+    end
+ end
+end)
+end
+
+local function quests()
+    spawn(function()
+for _,v in pairs(game:GetService("Workspace").GameObjects.NPCs:GetChildren()) do --same thing as in mobs
+    if v:IsA("Model") then
+        table.insert(questTable, v.Name)
+    end
+ end
+end)
+end
+
+quests()
+area()
+
+
+
+
+local function platformstand()
+if getgenv().platform == true then
+    Part.Anchored = true
+    Part.Size = Vector3.new(10, .001, 10)
+    while getgenv().platform do
+        wait()
+    Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3.02, 0)
+    end
+
+else
+    return
+end
+end
+local function areatp()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Areas[area1].CFrame
+
+end
+
+
+
+
+local function autoquest()
+if getgenv().autoquest then
+while getgenv().autoquest do task.wait()
+
+    game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("TalkToNPC"):FireServer(quest,"")
+end
+else
+    return
+end
+end
+local function autofarm()
+spawn(function()
+if getgenv().autofarm then
+while getgenv().autofarm do task.wait()
+    if game:GetService("Workspace").Main.Players:FindFirstChild(mob)  then
+        if game:GetService("Workspace").Main.Players[mob].Humanoid.Health > 0 then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,position)
+    game:GetService("Players").LocalPlayer.Character.ClientStateReplication.M1:FireServer(true)
+        elseif game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0  then 
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-706, -578, -1453)
+
+        end
+    else
+        return
+    end
+
+end
+else
+    return
+end
+end)
+end
+
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Lee rpg by Mac#0014", "DarkTheme")
+local Tab = Window:NewTab("Autofarms")
+local Section = Tab:NewSection("Farms")
+
+
+Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
+    if state then
+       getgenv().autofarm = true
+       autofarm()
+    else
+        getgenv().autofarm = false
+        autofarm()
+    end
+end)
+
+Section:NewDropdown("Choose mob", "DropdownInf", mobTable, function(currentOption)
+    mob = currentOption
+end)
+
+
+Section:NewSlider("SliderText", "SliderInfo", 10, -10, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    position = s
+end)
+local Section = Tab:NewSection("Auto quests")
+
+Section:NewToggle("Autoquest toggle", "ToggleInfo", function(state)
+    if state then
+       getgenv().autoquest = true
+       autoquest()
+    else
+        getgenv().autoquest = false
+        autoquest()
+    end
+end)
+
+Section:NewDropdown("Choose quest", "DropdownInf", questTable, function(currentOption)
+    quest = currentOption
+end)
+
+local Tab = Window:NewTab("Teleports")
+local Section = Tab:NewSection("Area teleports")
+Section:NewDropdown("Choose area to tp to", "DropdownInf", areaTable, function(currentOption)
+    area1 = currentOption
+    areatp()
+end)
+
+Section:NewToggle("Platform toggle (to prevent falling to void)", "ToggleInfo", function(state)
+    if state then
+       getgenv().platform = true
+       platformstand()
+    else
+        getgenv().platform = false
+        platformstand()
+    end
+end)
+
+
+local Tab = Window:NewTab("Misc")
+local Section = Tab:NewSection("Misc")
+Section:NewToggle("Noclip toggle ", "ToggleInfo", function(state)
+    if state then
+       getgenv().noclip = true
+       noclip()
+    else
+        getgenv().noclip = false
+        noclip()
+    end
+end)
+
+Section:NewButton("Antiafk", "ButtonInfo", function()
+    antiafk()
+end)
+
+Section:NewButton("Serverhop", "ButtonInfo", function()
+    serverhop()
+end)
+
+local Tab = Window:NewTab("Settings")
+local Section = Tab:NewSection("Settings")
+
+
+Section:NewButton("Potato pc mode", "ButtonInfo", function()
+    lowgraphics()
+end)
+
+Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
+	Library:ToggleUI()
+end)
+
+
+
