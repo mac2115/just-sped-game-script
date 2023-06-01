@@ -404,6 +404,8 @@ Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
         autofarm()
     end
 end)
+
+local Section = Tab:NewSection("Killauras")
 Section:NewToggle("Killaura (use as demon) toggle", "ToggleInfo", function(state)
     if state then
         getgenv().killauraford = true 
@@ -423,10 +425,11 @@ Section:NewToggle("Killaura (use as slayer) toggle", "ToggleInfo", function(stat
         killaura()
     end
 end)
-
+local Section = Tab:NewSection("Autofarm settings")
 Section:NewDropdown("Choose mob to farm", "DropdownInf", mobTable, function(currentOption)
     mob = currentOption
 end)
+
 Section:NewSlider("Position", "SliderInfo", 6, -6, function(s) -- 500 (MaxValue) | 0 (MinValue)
     position = s
 end)
@@ -438,6 +441,7 @@ Section:NewDropdown("Choose npc to tp to", "DropdownInf", npcTable, function(cur
     Npc = currentOption
     npc()
 end)
+
 local Section = Tab:NewSection("Area teleports")
 Section:NewDropdown("Choose area to tp to", "DropdownInf", areaTable, function(currentOption)
     Area = currentOption
@@ -459,6 +463,16 @@ end)
 Section:NewDropdown("Choose tool to equip", "DropdownInf", toolTable, function(currentOption)
     tool = currentOption
    
+end)
+local Section = Tab:NewSection("Toggles")
+Section:NewToggle("Key teleport toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().findkey = true
+       findkey()
+    else
+        getgenv().findkey = false
+        findkey()
+    end
 end)
 
 
@@ -494,22 +508,11 @@ Section:NewSlider("Speed amount", "Speed amount", 500, 0, function(s) -- 500 (Ma
     amount = s
 end)
 
-
+local Section = Tab:NewSection("Other stuff")
 Section:NewButton("Antisunburn", "ButtonInfo", function()
     antisunburn()
  end)
  
- Section:NewToggle("Key teleport toggle", "ToggleInfo", function(state)
-    if state then
-        getgenv().findkey = true
-       findkey()
-    else
-        getgenv().findkey = false
-        findkey()
-    end
-end)
-
-
 
 Section:NewButton("Free custom haori", "ButtonInfo", function()
     haori()
@@ -524,7 +527,7 @@ local Section = Tab:NewSection("Ui binds")
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
 	Library:ToggleUI()
 end)
-
+local Section = Tab:NewSection("Additional uis")
 Section:NewButton("Chat logger", "Chat logger", function()
     chatlogger()
 end)
