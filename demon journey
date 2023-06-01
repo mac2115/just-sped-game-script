@@ -324,12 +324,12 @@ spawn(function()
 if getgenv().autofarm == true  then
 while getgenv().autofarm == true  do task.wait()
     if game:GetService("Workspace").LivingThings:FindFirstChild(mob)   then
-        if game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 then
-            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1  do task.wait()
+        if game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 and getgenv().autofarm == true then
+            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 and getgenv().autofarm == true  do task.wait()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,position,0)
             end
-        elseif  game:GetService("Workspace").LivingThings[mob].Humanoid.Health  == 0 or game:GetService('Players').LocalPlayer.Character.Humanoid.Health < 20  then
-            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 0 or game:GetService('Players').LocalPlayer.Character.Humanoid.Health < 20 do  task.wait()
+        elseif  game:GetService("Workspace").LivingThings[mob].Humanoid.Health  == 0 and getgenv().autofarm == true  then
+            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 0 and getgenv().autofarm == true do  task.wait()
 
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(141, 125, 615)
            
