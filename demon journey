@@ -3,6 +3,7 @@ getgenv().noclip = false
 getgenv().killaura = true
 getgenv().killauraford = true
 getgenv().antiafk = true
+getgenv().walkspeed = true
 local npcTable = {}
 local areaTable = {}
 local mobTable = {
@@ -14,6 +15,154 @@ local mobTable = {
 "TypeZero"
 
 }
+
+local function spectate()
+    local UIS, CoreGui, Players = game:GetService("UserInputService"), game:GetService("CoreGui"), game:GetService("Players")
+    local Player = Players.LocalPlayer
+    local PlayerButtons = {}
+    local viewing = Player
+    local viewDied, viewChanged
+    local spectating = false
+    local GUI = game:GetObjects("rbxassetid://7093449497")[1]
+    local Teleport = GUI.Teleport
+    local Template = Teleport.List.Template
+    Template.Visible = false
+    GUI.Parent = CoreGui
+    
+    function dragify(Frame)
+        local startPos, dragPos, dragInput, dragStart, dragToggle
+        local dragSpeed = 0.30
+        
+        local function updateInput(input)
+            local Delta = input.Position - dragStart
+            local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+            game:GetService("TweenService"):Create(Frame.Parent, TweenInfo.new(dragSpeed), {Position = Position}):Play()
+        end
+        
+        Frame.InputBegan:Connect(function(input)
+            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and UIS:GetFocusedTextBox() == nil then
+                dragToggle = true
+                dragStart = input.Position
+                startPos = Frame.Parent.Position
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragToggle = false
+                    end
+                end)
+            end
+        end)
+        
+        Frame.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
+        
+        UIS.InputChanged:Connect(function(input)
+            if input == dragInput and dragToggle then
+                updateInput(input)
+            end
+        end)
+    end
+    
+    function addButton(player)
+        local button = Template:Clone()
+        button.Name = player.Name
+        button.Player.Text = player.Name
+        button.Parent = Teleport.List
+        if Teleport.Search.Text == "" or button.Name:sub(1, Teleport.Search.Text:len()):lower() == Teleport.Search.Text:lower() then
+            button.Visible = true
+        end
+        button.Goto.MouseButton1Click:Connect(function()
+            Player.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
+        end)
+        button.Spectate.MouseButton1Click:Connect(function()
+            if spectating and player.Name == viewing.Name then
+                spectating = false
+                if PlayerButtons[viewing.Name] then
+                    PlayerButtons[viewing.Name].Spectate.BackgroundColor3 = Color3.fromRGB(121, 121, 121)
+                end
+                if viewing ~= Player then
+                    viewing = Player
+                end
+                if viewDied then
+                    viewDied:Disconnect()
+                    viewChanged:Disconnect()
+                end
+                workspace.CurrentCamera.CameraSubject = Player.Character
+            elseif not spectating or player.Name ~= viewing.Name then
+                spectating = true
+                if PlayerButtons[viewing.Name] then
+                    PlayerButtons[viewing.Name].Spectate.BackgroundColor3 = Color3.fromRGB(121, 121, 121)
+                end
+                button.Spectate.BackgroundColor3 = Color3.fromRGB(91, 91, 91)
+                if viewDied then
+                    viewDied:Disconnect()
+                    viewChanged:Disconnect()
+                end
+                viewing = player
+                workspace.CurrentCamera.CameraSubject = viewing.Character
+                viewDied = player.CharacterAdded:Connect(function()
+                    repeat wait() until player.Character ~= nil and player.Character:FindFirstChild("HumanoidRootPart")
+                    workspace.CurrentCamera.CameraSubject = viewing.Character
+                end)
+                    viewChanged = workspace.CurrentCamera:GetPropertyChangedSignal("CameraSubject"):Connect(function()
+                    workspace.CurrentCamera.CameraSubject = viewing.Character
+                end)
+            end
+        end)
+        PlayerButtons[player.Name] = button
+    end
+    
+    Players.PlayerAdded:Connect(function(player)
+        if player ~= Player then
+            addButton(player)
+        end
+    end)
+    
+    Players.PlayerRemoving:Connect(function(player)
+        if player ~= Player then
+            PlayerButtons[player.Name]:Destroy()
+            PlayerButtons[player.Name] = nil
+        end
+    end)
+    
+    for _,player in pairs(Players:GetPlayers()) do
+        if player ~= Player then
+            addButton(player)
+        end
+    end
+    
+    Teleport.Search:GetPropertyChangedSignal("Text"):Connect(function()
+        for _,button in pairs(PlayerButtons) do
+            local matches = Teleport.Search.Text == "" or button.Name:sub(1, Teleport.Search.Text:len()):lower() == Teleport.Search.Text:lower()
+            if button and matches then
+                button.Visible = true
+            elseif button and not matches then
+                button.Visible = false
+            end
+        end
+    end)
+    
+    dragify(Teleport.Topbar)
+
+end
+
+local function walkspeed()
+    spawn(
+        function()
+            if getgenv().walkspeed == true then
+                while getgenv().walkspeed do
+                    task.wait()
+                    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = amount
+                end
+            else
+                return
+            end
+        end
+    )
+end
+
 local function antisunburn()
     spawn(function()
     local __Namecall
@@ -143,15 +292,14 @@ while getgenv().autofarm == true  do task.wait()
     if game:GetService("Workspace").LivingThings:FindFirstChild(mob)   then
         if game:GetService("Workspace").LivingThings[mob].Humanoid.Health > 1 then
             while getgenv().autofarm == true  do task.wait()
-            
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,0,position)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,position,0)
             end
         elseif game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 1 then
             while game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 1  do task.wait()
-                game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
-
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,0,position)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,position,0)
             end
+        elseif game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 0 then
+            return
         end
     else
         return
@@ -165,6 +313,16 @@ end
 
 end)
 end
+
+local function tpaway()
+    getgenv().autofarm = false
+    autofarm()
+    wait(0.5)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(141, 125, 615) 
+
+    end
+
+
 local function killaurafordemons()
     spawn(function()
 if getgenv().killauraford == true then
@@ -197,6 +355,9 @@ local Window = Library.CreateLib("Some farming by Mac#0014", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Autofarms")
 
+Section:NewButton("Tp away", "ButtonInfo", function()
+    tpaway()
+end)
 
 Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
     if state then
@@ -230,7 +391,7 @@ end)
 Section:NewDropdown("Choose mob to farm", "DropdownInf", mobTable, function(currentOption)
     mob = currentOption
 end)
-Section:NewSlider("Position", "SliderInfo", 10, -10, function(s) -- 500 (MaxValue) | 0 (MinValue)
+Section:NewSlider("Position", "SliderInfo", 6, -6, function(s) -- 500 (MaxValue) | 0 (MinValue)
     position = s
 end)
 
@@ -269,6 +430,20 @@ Section:NewToggle("Antiafk toggle", "ToggleInfo", function(state)
         antiafk()
     end
 end)
+Section:NewToggle("Speed toggle", "ToggleInfo", function(state)
+    if state then
+        getgenv().walkspeed = true
+       walkspeed()
+    else
+        getgenv().walkspeed = false
+        walkspeed()
+    end
+end)
+Section:NewSlider("Speed amount", "Speed amount", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    amount = s
+end)
+
+
 Section:NewButton("Antisunburn", "ButtonInfo", function()
     antisunburn()
  end)
@@ -292,7 +467,12 @@ local Section = Tab:NewSection("Ui binds")
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
 	Library:ToggleUI()
 end)
+
 Section:NewButton("Chat logger", "Chat logger", function()
     chatlogger()
+end)
+
+Section:NewButton("Spectating ui", "ButtonInfo", function()
+    spectate()
 end)
 
