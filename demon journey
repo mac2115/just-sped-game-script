@@ -150,6 +150,41 @@ local function spectate()
     dragify(Teleport.Topbar)
 
 end
+local function removefog()
+    local s = Instance.new("PointLight", game.Players.LocalPlayer.Character.Head)
+    s.Brightness = 0.3
+    s.Range = 100
+    game.Lighting.Changed:connect(function()
+    game.Lighting.TimeOfDay = "14:00:00"
+    game.Lighting.FogEnd = 9999
+    game.Lighting.Brightness = 2
+    game.Lighting.ColorCorrection.Brightness = 0.1
+    game.Lighting.ColorCorrection.Saturation = 0.1
+    game.Lighting.Bloom.Intensity = 0.1
+    end)
+
+end
+
+local function lowgraphics()
+    for _,v in pairs(workspace:GetDescendants()) do
+        if v.ClassName == "Part"
+        or v.ClassName == "SpawnLocation"
+        or v.ClassName == "WedgePart"
+        or v.ClassName == "Terrain"
+        or v.ClassName == "MeshPart" then
+        v.Material = "Plastic"
+        end
+        end
+        
+        for _,v in pairs(workspace:GetDescendants()) do
+        if v.ClassName == "Decal"
+        or v.ClassName == "Texture" then
+        v:Destroy()
+        end
+        end
+
+end
+
 
 local function walkspeed()
     spawn(
@@ -535,4 +570,11 @@ end)
 Section:NewButton("Spectating ui", "ButtonInfo", function()
     spectate()
 end)
+local Section = Tab:NewSection("Optimalization")
+Section:NewButton("Fps boost mode", "ButtonInfo", function()
+    lowgraphics()
+end)
 
+Section:NewButton("Remove fog", "ButtonInfo", function()
+    removefog()
+end)
