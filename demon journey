@@ -244,7 +244,7 @@ local function findkey()
         while getgenv().findkey do task.wait()
 if game:GetService("Workspace").Keys:FindFirstChild("Key")  then
     getgenv().autofarm = false
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Keys.Key.CD.CFrame
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Keys.Key.CD.CFrame *CFrame.new(0,3,0)
 end
 end
 else
