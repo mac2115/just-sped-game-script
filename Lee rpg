@@ -142,10 +142,10 @@ end
     end
 end
 game.StarterGui:SetCore("SendNotification", {
-    Title = "Make sure to join my discord server!"; -- the title (ofc)
-    Text = "https://discord.gg/7Zd6xWc9M4"; -- what the text says (ofc)
-    Icon = ""; -- the image if u want. 
-    Duration = 20; -- how long the notification should in secounds
+    Title = "Make sure to join my discord server!"; 
+    Text = "https://discord.gg/7Zd6xWc9M4"; 
+    Icon = ""; 
+    Duration = 20; 
     })
 
 local function noclip()
