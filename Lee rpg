@@ -328,7 +328,7 @@ end
 local function autofarm()
 spawn(function()
 if getgenv().autofarm then
-while getgenv().autofarm do task.wait()
+
     if game:GetService("Workspace").Main.Players:FindFirstChild(mob)    then
        
         if game:GetService("Workspace").Main.Players[mob].Humanoid.Health > 0 then
@@ -347,9 +347,10 @@ while getgenv().autofarm do task.wait()
         return
     end
 
-end
+
 else
     return
+
 end
 end)
 end
@@ -388,22 +389,30 @@ local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Farms")
 
 
-Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
-    if state then
-       getgenv().autofarm = true
-       autofarm()
-    else
-        getgenv().autofarm = false
-        autofarm()
+Section:NewToggle(
+    "Autofarm",
+    "Toggles Autofarm",
+    function(state)
+        getgenv().autofarm = state
+       
+        while true do
+            task.wait()
+            if getgenv().autofarm == false then
+                break
+            end
+        
+            autofarm()
+        end
     end
-end)
+)
+
 local Section = Tab:NewSection("Autofarm settings")
 Section:NewDropdown("Choose mob", "DropdownInf", mobTable, function(currentOption)
     mob = currentOption
 end)
 
 
-Section:NewSlider("SliderText", "SliderInfo", 10, -10, function(s) -- 500 (MaxValue) | 0 (MinValue)
+Section:NewSlider("Farm position", "SliderInfo", 10, -10, function(s) -- 500 (MaxValue) | 0 (MinValue)
     position = s
 end)
 local Section = Tab:NewSection("Auto quests")
