@@ -1,27 +1,87 @@
-
-getgenv().killaura = false
-getgenv().godmode = false
-getgenv().autobreathing = false
-getgenv().autofarm = false
-getgenv().bossautofarm = false
-getgenv().minionautofarm = false
-getgenv().walkspeed = false
-getgenv().jumpower = false
-getgenv().chatspammer = false
-getgenv().autogrip = false
-getgenv().bossspawner = true
+getgenv().autofarm = true
+getgenv().autoquest = true
+getgenv().platform  = true
 getgenv().noclip = true
-getgenv().boss1 = false
-getgenv().findnpc = true
-getgenv().autoequip = true
-getgenv().instantmaxlvlslayer = true
-getgenv().getquest = true
-getgenv().eventnpcfarm = true
-getgenv().playerfarm = true 
-getgenv().autogrip2 = true
-local npcTable = {}
+getgenv().infstamina = true
+getgenv().corps = true
+getgenv().infstamina2 = true
+getgenv().chestfarm = true
+local Part = Instance.new("Part", workspace)
+local vim = game:service("VirtualInputManager")
+local mobTable = {"Giant Sand Kip",
+"Sand Kip",
+"Turtling",
+"Goblin",
+"TheFirstDesire",
+"Maxwell",
+"Giant Evil Leech",
+"Abyssal Watcher",
+"Snow Dweller",
+"Rock Pig",
+"Purple Goblin",
+"Rat Kin",
+"Water Turtle",
+"Fire Bird",
+"Cyclops"
+,"Sand Onion"
+,"Stone Slicer",
+"Goblin Archer",
+"Cave Goblin",
+"Abyssal Giant",
+"Cave Sha",
+"Abyssal Skinner",
+"Bandit Gunner",
+"Electro Raptor",
+"Abyssal Puppet",
+"Abyssal Archer",
+"Demon Grunt",
+"Cyclops Bot",
+"Darkling",
+"Cave Rex"
+,
+"Evil Leech",
+"Stone Golem",
+"Sand Golem",
+"Mouse Kin",
+"Sand Warrior",
+"Lightning Entity",
+"Bandit",
+"Bandit Commander",
+"Goblin Commander"
+,"Goblin Commando",
+"Deer"
+
+}
+local questTable = {
+"Kippy",
+"Zoe The Farmer",
+"Falic The Farmer",
+"Goblin Slayer",
+"Kasper",
+"Isaac, Towns Keep",
+"James, Shell Smith",
+"Mranimebar, Collector",
+"Remi, White Whistle",
+"Shell Collector",
+"Sick Farmer Boy",
+"Tina, Shaman Doctor",
+
+}
 local areaTable = {}
-local playerTable = {}
+local npcTable = {}
+local sellerTable = {
+    "Corpse Harvester",
+"YungSkubs, Butcher"
+}
+
+local chestTable = {
+"Basic Chest",
+"Iron Chest"
+
+
+}
+
+
 local PlaceID = game.PlaceId
 local AllIDs = {}
 local foundAnything = ""
@@ -82,366 +142,6 @@ end
     end
 end
 
- local function serverhop()
-    while wait() do
-        pcall(function()
-            TPReturner()
-            if foundAnything ~= "" then
-                TPReturner()
-            end
-        end)
-    end
-end
-
-local function antiafk()
-    spawn(function()
-
-    for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
-        v:Disable()
-    end
-end)
-
-
-end
-
-
-local function antisunburn()
-
-    game:GetService("ReplicatedStorage").Effects.Particles.Burning:Destroy()
-
-end
-
-local function lowgraphics()
-    for _,v in pairs(workspace:GetDescendants()) do
-        if v.ClassName == "Part"
-        or v.ClassName == "SpawnLocation"
-        or v.ClassName == "WedgePart"
-        or v.ClassName == "Terrain"
-        or v.ClassName == "MeshPart" then
-        v.Material = "Plastic"
-        end
-        end
-        
-        for _,v in pairs(workspace:GetDescendants()) do
-        if v.ClassName == "Decal"
-        or v.ClassName == "Texture" then
-        v:Destroy()
-        end
-        end
-
-end
-
-local function removefog()
-    local s = Instance.new("PointLight", game.Players.LocalPlayer.Character.Head)
-    s.Brightness = 0.3
-    s.Range = 100
-    game.Lighting.Changed:connect(function()
-    game.Lighting.TimeOfDay = "14:00:00"
-    game.Lighting.FogEnd = 9999
-    game.Lighting.Brightness = 2
-    game.Lighting.ColorCorrection.Brightness = 0.1
-    game.Lighting.ColorCorrection.Saturation = 0.1
-    game.Lighting.Bloom.Intensity = 0.1
-    end)
-
-end
-
-
-local function player2()
-    spawn(function()
-for _,v in pairs(game:GetService("Workspace").Live.Players:GetChildren()) do
-    if v:IsA("Model")  then
-        table.insert(playerTable, v.Name) 
-    end
- end
-end)
-end
-
-
-local function npc()
-    spawn(function()
-for _,v in pairs(game:GetService("Workspace").Trainers:GetChildren()) do
-   if v:IsA("Model")  then
-       table.insert(npcTable, v.Name) 
-   end
-end
-end)
-end
-
-
-local function area()
-    spawn(function()
-for _,v in pairs(game:GetService("Workspace").Idols:GetChildren()) do
-    if v:IsA("Model")  then
-        table.insert(areaTable, v.Name) 
-    end
- end
-end)
-end
-npc()
-player2()
-area()
-
-local function players()
-spawn(function()
-if getgenv().playerfarm == true then
-    if game:GetService("Workspace").Live.Players:FindFirstChild(player)  then
-while game:GetService("Workspace").Live.Players:FindFirstChild(player) and getgenv().playerfarm   do task.wait()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Live.Players[player].HumanoidRootPart.CFrame * CFrame.new(0, 0, positionz1)
-    game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("M2")
-    game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("Hitbox",1,"M2")
-end
-else
-    return
-    end
-else
-   return
-
- end
-
-
-
-end)
-end
-
-
-local function autogrip2()
-    spawn(
-        function()
-            if getgenv().autogrip2 == true then
-                while getgenv().autogrip2 do task.wait(10)
-                
-                game:GetService("Players").LocalPlayer.Character.Controller.RemoteEvent:FireServer("Grip")
-                end
-                    else
-                        return
-                    end
-            
-            
-            end)
-        end
-    
-
-
-
-local function trainers2()
-    spawn(function()
-
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Trainers[trainer].HumanoidRootPart.CFrame
-end)
-end
-
-local function areatp()
-    spawn(function()
-
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Idols[area].HumanoidRootPart.CFrame
-end)
-end
-
-
-
-local function muzanquest()
-
-game:GetService("Players").LocalPlayer.PlayerGui.Main.MuzanQuest.LocalScript.RemoteEvent:FireServer("Accept")
-
-end
-
-
-
-
-local function lvl5breath()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(196, 361, 2091)
-end
-
-
-local function OldManYochiro1()
-    spawn(function()
-if getgenv().eventnpcfarm == true then
-
-    for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-        if v.Name == eventlookingfor then
-            return v.Name
-        end
-    end
-
-else
-    return
-end
-end)
-end
-
-
-
-local function eventnpcfarm()
-    spawn(function()
-        if getgenv().eventnpcfarm == true then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(304, 100, 2321)
-            wait(3)
-
-            while getgenv().eventnpcfarm and wait() do
-
-for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-    
-    if string.find(v.Name, eventlookingfor) and v.Name ~= OldManYochiro1() and not v:FindFirstChild("Shadow A. Mask") then
-        
-
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, positionevent)
-end
-end
-end
-else
-    return
-
-end
-
-    end)
-
-end
-
-
-local function killauraforevent()
-    spawn(
-        function()
-            if getgenv().eventnpcfarm == true then
-                while getgenv().eventnpcfarm do
-                    task.wait()
-                    pcall(function()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("M2")
-                        task.wait()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("Hitbox",1,"M2")
-                    end)
-                end
-            else
-                return
-            end
-        end
-    )
-end
-
-
-
-
-
-
- local function getquest()
-    spawn(function()
-if getgenv().getquest == true then
-    
-    game:GetService("ReplicatedStorage").Events.CrowEvent:FireServer("SpawnCrow")
-
-    game:GetService("Players").LocalPlayer.PlayerGui.Main.CrowQuest.LocalScript.RemoteEvent:FireServer("Accept")
-    end
-    end)
- end
-
- local function instantlvl()
-    spawn(function()
-        if getgenv().instantmaxlvlslayer == true then
-            while getgenv().instantmaxlvlslayer  do task.wait()
-                for i = 1,100 do 
-                game:GetService("ReplicatedStorage").Events.LuteEvent:FireServer("Win")
-                end
-            end
-        end
-    end)
-end
-
-
-
-local function autoequip()
-spawn(function()
-    if getgenv().autoequip == true then
-    while getgenv().autoequip do task.wait()
-        for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v.name == tool then
-                v.Parent = game.Players.LocalPlayer.Character
-            end
-        end
-    end
-else
-    return
-end
-end)
-end
-
-
-
-local function OldManYochiro()
-    spawn(function()
-if getgenv().findnpc == true then
-
-    for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-        if v.Name == npclookingfor then
-            return v.Name
-        end
-    end
-else
-    return
-end
-end)
-end
-
-
-local function findnpc()
-    spawn(function()
-        if getgenv().findnpc == true then
-
-            while getgenv().findnpc and wait() do
-                if npclookingfor == "Merchant" then 
-for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-    if string.find(v.Name, npclookingfor) and v.Name ~= OldManYochiro() and not v:FindFirstChild("Shadow A. Mask")  then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-    
-    end
-end
-elseif npclookingfor == "Injured" then 
-
-    for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-        if string.find(v.Name, npclookingfor) and v.Name ~= OldManYochiro() and not v:FindFirstChild("Shadow A. Mask") then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-        
-        end
-    end
-
-elseif npclookingfor == "OldMan" then 
-    for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-        if string.find(v.Name, npclookingfor) and v.Name ~= OldManYochiro() and not v:FindFirstChild("Shadow A. Mask")  then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-        
-        end
-    end
-elseif npclookingfor == "Muzan" then 
-    for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-        if string.find(v.Name, npclookingfor) and v.Name ~= OldManYochiro() and not v:FindFirstChild("Shadow A. Mask")  then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-        
-        end
-    end
-
-else
-    return
-
-end
-
-end
-elseif npclookingfor == "Muzan" then
-for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-    if string.find(v.Name, npclookingfor) and v.Name ~= OldManYochiro() and not v:FindFirstChild("Shadow A. Mask") then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-    else
-        return
-end
-end
-else
-    return
-end
-end)
-end
-
-
-
-
-
 local function noclip()
     game:GetService("RunService").Stepped:Connect(
         function()
@@ -470,793 +170,365 @@ local function noclip()
     )
 end
 
-local triggered = false
-
-local function autogrip()
-    spawn(
-        function()
-            if getgenv().autogrip == true then
-                while getgenv().autogrip do task.wait(10)
-                    game:GetService("Players").LocalPlayer.Character.Controller.RemoteEvent:FireServer("Grip")
-                end
-            else
-                return
-            end
+local function lowgraphics()
+    for _,v in pairs(workspace:GetDescendants()) do
+        if v.ClassName == "Part"
+        or v.ClassName == "SpawnLocation"
+        or v.ClassName == "WedgePart"
+        or v.ClassName == "Terrain"
+        or v.ClassName == "MeshPart" then
+        v.Material = "Plastic"
         end
-    )
-end
-
-  
-
-local function chatspammer()
-    spawn(
-        function()
-            if getgenv().chatspammer == true then
-                while getgenv().chatspammer do
-                    task.wait()
-                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(sentence,"All")
-                end
-            else
-                return
-            end
         end
-    )
-end
-
-local function jumpower()
-    spawn(
-        function()
-            if getgenv().jumpower == true then
-                while getgenv().jumpower do
-                    task.wait()
-                    game.Players.LocalPlayer.Character.Humanoid.JumpPower = amount1
-                end
-            else
-                return
-            end
+        
+        for _,v in pairs(workspace:GetDescendants()) do
+        if v.ClassName == "Decal"
+        or v.ClassName == "Texture" then
+        v:Destroy()
         end
-    )
-end
-
-local function walkspeed()
-    spawn(
-        function()
-            if getgenv().walkspeed == true then
-                while getgenv().walkspeed do
-                    task.wait()
-                    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = amount
-                end
-            else
-                return
-            end
         end
-    )
-end
 
-local function serverhop()
-    game:GetService("TeleportService"):Teleport(8874112980)
 end
+local function infstaminarunning()
+if getgenv().infstamina == true then
+while getgenv().infstamina do task.wait()
+   
+    game:GetService("Players").LocalPlayer.Character.Events.Running:FireServer(false)
 
-local function muzan()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(922, 212, 2734)
 end
-
-
-
-local function stwtrainer()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-61, 81, 42)
+else
+    return
 end
-local function idol1()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(954, 134, 1740)
 end
-local function idol2()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(71, 377, -3916)
-end
-local function idol3()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1634, 149, -880)
-end
-
-local function instalute()
-    game:GetService("ReplicatedStorage").Events.LuteEvent:FireServer("Win")
-end
-
-local function lutetp()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(48, 75, 113)
-end
-
-local function keypress()
-    spawn(
-        function()
-            local N = game:GetService("VirtualInputManager")
-            N:SendKeyEvent(true, "E", false, game)
-        end
-    )
-end
-
-local function keypress2()
-    spawn(
-        function()
-            local N = game:GetService("VirtualInputManager")
-            N:SendKeyEvent(true, "W", false, game)
-        end
-    )
-end
-
-local function bossspawner()
-    spawn(
-        function()
-            if bosses == "Akaza" then
-            while not game:GetService("Workspace").Live.Bosses:FindFirstChild(bosses) and getgenv().bossautofarm do task.wait(1)  
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1046, 24, 3180)
-            keypress()
-            keypress2()
-            end
-        elseif bosses == "Shura" then
-            while not game:GetService("Workspace").Live.Bosses:FindFirstChild(bosses) and getgenv().bossautofarm  do task.wait(1) 
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1687, 167, -1868)
-                keypress()
-
-        end
+local function infstaminaflying()
+    if getgenv().infstamina2 == true then
+    while getgenv().infstamina2 do task.wait()
+       
+        game:GetService("Players").LocalPlayer.Character.Events.Flying:FireServer(false)
+    
+    end
     else
         return
-
     end
+    end
+
+ local function serverhop()
+    while wait() do
+        pcall(function()
+            TPReturner()
+            if foundAnything ~= "" then
+                TPReturner()
+            end
         end)
     end
-
-
-
-local function killauraforboss()
-    spawn(
-        function()
-            if getgenv().bossautofarm == true then
-                while getgenv().bossautofarm do
-                    task.wait()
-                    pcall(function()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("M2")
-                        task.wait()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("Hitbox",1,"M2")
-                    end)
-                end
-            else
-                return
-            end
-        end
-    )
-end
-
-local function boss()
-    spawn(
-        function()
-            if getgenv().bossautofarm == true then
-                if bosses == "Akaza" then
-                    while getgenv().bossautofarm do
-                        task.wait()
-
-                        if game:GetService("Workspace").Live.Bosses:FindFirstChild(bosses) and not game:GetService("Workspace").Live.BossMinions:FindFirstChild("BossUltra") then
-                            
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Live.Bosses[bosses].HumanoidRootPart.CFrame * CFrame.new(0, 0, position1)
-
-                        elseif not game:GetService("Workspace").Live.Bosses:FindFirstChild(bosses) then
-                        
-                            bossspawner()
-                        wait(5)
-                        elseif game:GetService("Workspace").Live.BossMinions:FindFirstChild("BossUltra") then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Live.BossMinions.BossUltra.HumanoidRootPart.CFrame * CFrame.new(0, 0, position1)
-                        end
-                    end
-                elseif bosses == "Shura" then
-                    while getgenv().bossautofarm do
-                        task.wait()
-                        if game:GetService("Workspace").Live.Bosses:FindFirstChild(bosses) then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame =
-                                game:GetService("Workspace").Live.Bosses[bosses].HumanoidRootPart.CFrame *
-                                CFrame.new(0, 0, position1)
-                        elseif not game:GetService("Workspace").Live.Bosses:FindFirstChild(bosses) then
-                           
-                            bossspawner()
-                            wait(5)
-                            
-                        end
-                    end
-
-                else
-                    return
-                end
-            else
-                return
-            end
-        end
-    )
 end
 
 
-
-local function killauraforautofarm()
-    spawn(
-        function()
-            if getgenv().autofarm == true then
-                while getgenv().autofarm do
-                    task.wait()
-                    pcall(function()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("M1")
-                        task.wait()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("Hitbox",1,"M1")
-                    end)
-                end
-            else
-                return
-            end
-        end
-    )
-end
-
-local function autofarm(demon)
-    spawn(
-        function()
-            if getgenv().autofarm == true then
-                while getgenv().autofarm do
-                    task.wait()
-                    if game:GetService("Workspace").Live.Npcs:FindFirstChild(demon) then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Live.Npcs[demon].HumanoidRootPart.CFrame * CFrame.new(0, 0, positionz)
-
-
-                    else
-
-                        return
-                        
-                    end
-                end
-            else
-                return
-            end
-        end
-    )
-end
-
-local function killaura()
-    spawn(
-        function()
-            if getgenv().killaura == true then
-                while getgenv().killaura do
-                    task.wait()
-                    pcall(function()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("M1")
-                        task.wait()
-                        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Tool").RemoteEvent:FireServer("Hitbox",1,"M1")
-                    end)
-                end
-            else
-                return
-            end
-        end
-    )
-end
-
-local function godmode()
-    spawn(
-        function()
-            if getgenv().godmode == true then
-                while getgenv().godmode do
-                    task.wait()
-                    game.Players.LocalPlayer.Character.Dash.RemoteEvent:FireServer("Falldmg", 0 / 0)
-                end
-            else
-                return
-            end
-        end
-    )
-end
-
-local function autobreathing()
+local function antiafk()
     spawn(function()
-        if getgenv().autobreathing == true then
-            game:GetService("Players").LocalPlayer.Character.Breath.RemoteEvent:FireServer("Start")
-        else
-            return
-        end
-    end)
-end
---ui--
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-
-local Window = Library.CreateLib("Midnight sun v2.70 by Mac#0014", "DarkTheme")
-
-local Tab = Window:NewTab("Autofarm")
-
-local Section = Tab:NewSection("Autofarms(use noclip to avoid glitches)")
-
-Section:NewToggle(
-    "Autofarm",
-    "Toggles Autofarm",
-    function(state)
-        if state then
-            getgenv().autofarm = true
-        else
-            getgenv().autofarm = false
-        end
-        
-        killauraforautofarm()
-        autofarm(demon)
+    for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
+        v:Disable()
     end
-)
-
-Section:NewDropdown(
-    "Choose Mob",
-    "Chooses mob for the autofarm to farm",
-    {"Weak", "Strong", "Ultra", "Mizunoto", "Kanato", "Tsuchinoe", "Hinoe"},
-    function(currentOption)
-        demon = currentOption
-    end
-)
-Section:NewToggle(
-    "Auto grip(for slayer npcs)",
-    "Automaticaly grips slayer npcs",
-    function(state)
-        if state then
-            getgenv().autogrip = true
-        else
-            getgenv().autogrip = false
-        end
-        autogrip()
-    end
-)
-
-Section:NewSlider(
-    "Farm position",
-    "Farm position",
-    7,
-    -6,
-    function(s) -- 500 (MaxValue) | 0 (MinValue)
-        positionz = s
-    end
-)
-
-local Section = Tab:NewSection("Autofarm Bosses(use  godmode)")
-
-Section:NewDropdown(
-    "Choose boss to farm(must be spawned)",
-    "Boss to choose",
-    {"Akaza", "Shura"},
-    function(currentOption)
-        bosses = currentOption
-    end
-)
-
-Section:NewToggle(
-    "Autofarm Bosses(use god mode, best position is 3)",
-    "Toggles Bosses Autofarm",
-    function(state)
-        if state then
-            getgenv().bossautofarm = true
-        else
-            getgenv().bossautofarm = false
-        end
-        killauraforboss()
-        boss()
-    end
-)
-
-Section:NewSlider(
-    "Farm position ",
-    "Farm position",
-    7,
-    -7,
-    function(s) -- 500 (MaxValue) | 0 (MinValue)
-        position1 = s
-    end
-)
-local Tab = Window:NewTab("Event Npc farm")
-local Section = Tab:NewSection("Event Npc autotp")
-Section:NewToggle(
-    "Auto Event Npc teleporter",
-    "Automatically teleports you to an npc if it spawned.",
-    function(state)
-        if state then
-            getgenv().findnpc = true
-        else
-            getgenv().findnpc = false
-        end
-        findnpc()
-        OldManYochiro()
-    end
-)
-Section:NewDropdown(
-    "Choose Event Npc to look for",
-    "Choose an Npc",
-    {"Muzan", "Merchant", "OldMan","Injured"},
-    function(currentOption)
-        npclookingfor = currentOption
-    end
-)
-
-local Section = Tab:NewSection("Event Npc Farms(use god mode)")
-Section:NewToggle(
-    "Auto Event mob farmer",
-    "Automatically farms npc .",
-    function(state)
-        if state then
-            getgenv().eventnpcfarm = true
-        else
-            getgenv().eventnpcfarm = false
-        end
-        
-        OldManYochiro1()
-        eventnpcfarm()
-        killauraforevent()
-    end
-)
-
-Section:NewDropdown(
-    "Choose Event Mob ",
-    "Chooses Mob for the autofarm to farm",
-    {"Spider"},
-    function(currentOption)
-        eventlookingfor = currentOption
-    end
-)
-
-
-
-Section:NewSlider(
-    "Farm position",
-    "Farm position",
-    7,
-    -7,
-    function(s) -- 500 (MaxValue) | 0 (MinValue)
-        positionevent = s
-    end
-)
-
-
-local Tab = Window:NewTab("Player")
-local Section = Tab:NewSection("Chat spammer")
-
-Section:NewToggle(
-    "Player farm toggle",
-    "Autofarms players",
-    function(state)
-        if state then
-            getgenv().playerfarm= true
-        else
-            getgenv().playerfarm = false
-        end
-        players()
-    end
-)
-Section:NewToggle(
-    "Autogrip for players",
-    "Autogrips players",
-    function(state)
-        if state then
-            getgenv().autogrip2= true
-        else
-            getgenv().autogrip2 = false
-        end
-        autogrip2()
-    end
-)
-local oldList = playerTable
-
-  local newList = playerTable
-    
-
-Section:NewDropdown("Choose a player to farm", "Choose a player to farm", oldList, function(currentOption)
-    player = currentOption
-    
 end)
 
-Section:NewButton("Refresh playerlist", "Refreshes Dropdown", function()
-    dropdown:Refresh(newList)
-  end)
 
-Section:NewSlider(
-    "Farm position",
-    "Farm position",
-    7,
-    -6,
-    function(s) -- 500 (MaxValue) | 0 (MinValue)
-        positionz1 = s
+end
+
+local function area()
+    spawn(function()
+for _,v in pairs(game:GetService("Workspace").Main.Areas:GetChildren()) do --same thing as in mobs
+    if v:IsA("Part") then
+        table.insert(areaTable, v.Name)
     end
-)
+ end
+end)
+end
 
-
-  
-  
-
-Section:NewToggle(
-    "Chat spammer toggle",
-    "Toggles chat spammer on",
-    function(state)
-        if state then
-            getgenv().chatspammer = true
-        else
-            getgenv().chatspammer = false
-        end
-        chatspammer()
+local function npcs()
+    spawn(function()
+for _,v in pairs(game:GetService("Workspace").GameObjects.NPCs:GetChildren()) do --same thing as in mobs
+    if v:IsA("Model") then
+        table.insert(npcTable, v.Name)
     end
-)
-Section:NewTextBox(
-    "Message:",
-    "What message you want to spam",
-    function(txt)
-        sentence = txt
+ end
+end)
+end
+
+npcs()
+area()
+
+
+
+local function talktonpcs()
+spawn(function()
+
+    game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("TalkToNPC"):FireServer(npc,"")
+
+end)
+end
+local function sellcorps()
+if getgenv().corps == true then 
+while getgenv().corps do task.wait()
+
+    game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("TalkToNPC"):FireServer(seller,"")
+end
+else
+    return
+end
+end
+
+
+local function platformstand()
+if getgenv().platform == true then
+    Part.Anchored = true
+    Part.Size = Vector3.new(10, .001, 10)
+    while getgenv().platform do
+        wait()
+    Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3.02, 0)
     end
-)
+
+else
+    return
+end
+end
+local function areatp()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Areas[area1].CFrame
+
+end
 
 
-local Section = Tab:NewSection("Player")
-Section:NewToggle(
-    "Noclip toggle",
-    "Toggles Noclip on",
-    function(state)
-        if state then
-            getgenv().noclip = true
-        else
-            getgenv().noclip = false
-        end
-        noclip()
-    end
-)
-
-Section:NewToggle(
-    "Walkspeed toggle",
-    "Toggles Walkspeed on",
-    function(state)
-        if state then
-            getgenv().walkspeed = true
-        else
-            getgenv().walkspeed = false
-        end
-        walkspeed()
-    end
-)
-
-Section:NewSlider(
-    "Walkspeed",
-    "Walkspeed",
-    500,
-    1,
-    function(s) -- 500 (MaxValue) | 0 (MinValue)
-        amount = s
-    end
-)
-Section:NewToggle(
-    "JumpPower toggle",
-    "Toggles JumpPower on",
-    function(state)
-        if state then
-            getgenv().jumpower = true
-        else
-            getgenv().jumpower = false
-        end
-        jumpower()
-    end
-)
-
-Section:NewSlider(
-    "JumpPower",
-    "JumpPower",
-    500,
-    1,
-    function(s) -- 500 (MaxValue) | 0 (MinValue)
-        amount1 = s
-    end
-)
-
-local Tab = Window:NewTab("Misc")
 
 
-local Section_MISC = Tab:NewSection("Instant max  lvl for slayers")
+local function autoquest()
+if getgenv().autoquest then
+while getgenv().autoquest do task.wait()
 
-Section_MISC:NewButton(
-    "Get crow quest(slayers)",
-    "Gets you the required crow quest for instant lvl",
-    getquest
-)
-Section_MISC:NewButton(
-    "Get Muzan quest(demons/hybrids)",
-    "Gets you the required Muzan quest for instant lvl",
-    muzanquest
-)
+    game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("TalkToNPC"):FireServer(quest,"")
+end
+else
+    return
+end
+end
 
 
-Section_MISC:NewToggle(
-        "Instant max lvl(quest needed) ",
-        "Toggles instamax lvl",
-        function(state)
-            if state then
-                getgenv().instantmaxlvlslayer = true
-            else
-                getgenv().instantmaxlvlslayer = false
+local function hold(keyCode, time)
+  vim:SendKeyEvent(true, keyCode, false, game)
+  task.wait(time)
+  vim:SendKeyEvent(false, keyCode, false, game)
+end
+
+
+local function autofarm()
+spawn(function()
+if getgenv().autofarm then
+while getgenv().autofarm do task.wait()
+    if game:GetService("Workspace").Main.Players:FindFirstChild(mob)    then
+       
+        if game:GetService("Workspace").Main.Players[mob].Humanoid.Health > 0 then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,position)
+    game:GetService("Players").LocalPlayer.Character.ClientStateReplication.M1:FireServer(true)
+
+   
+        elseif game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0  then
+            
+            while game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0 and getgenv().autofarm do task.wait()
+                
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,2,2)
+
+                hold(101, 2)
+
+           
+
             end
-            instantlvl()
+            
         end
-    )
 
+        
+    else
+        return
+    end
 
-local Section_MISC = Tab:NewSection("Misc")
+end
+else
+    return
+end
+end)
+end
+local function chestfarm()
+    spawn(function()
+    if getgenv().chestfarm then
+    while getgenv().chestfarm do task.wait()
+        for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
+            if string.find(v.Name, chest)  and  v:FindFirstChild("Part")  then
 
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace")[chest].Part.CFrame * CFrame.new(0,0,2)
 
-
-Section_MISC:NewToggle(
-        "Autoequip weapon",
-        "Toggles Autoequip",
-        function(state)
-            if state then
-                getgenv().autoequip = true
-            else
-                getgenv().autoequip = false
+                hold(101, 4)
             end
-            autoequip()
         end
-    )
 
-    Section_MISC:NewDropdown(
-        "Choose weapon to equip",
-        "Weapon to choose",
-       {"Nichirin", "Old Nichirin"},
-        function(currentOption)
-            tool = currentOption
-        end
-    )
 
-    
 
-Section_MISC:NewToggle(
-    "Killaura toggle",
-    "Toggles killaura on",
-    function(state)
-        if state then
-            getgenv().killaura = true
-        else
-            getgenv().killaura = false
-        end
-        killaura()
+
+
+
     end
-)
 
-Section_MISC:NewToggle(
-    "Godmode toggle",
-    "Toggles godmode on",
-    function(state)
-        if state then
-            getgenv().godmode = true
-        else
-            getgenv().godmode = false
-        end
-        godmode()
+else
+    return
+end
+end)
+end
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Lee rpg by Mac#0014", "DarkTheme")
+local Tab = Window:NewTab("Autofarms")
+local Section = Tab:NewSection("Farms")
+
+
+Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
+    if state then
+       getgenv().autofarm = true
+       autofarm()
+    else
+        getgenv().autofarm = false
+        autofarm()
     end
-)
+end)
+local Section = Tab:NewSection("Autofarm settings")
+Section:NewDropdown("Choose mob", "DropdownInf", mobTable, function(currentOption)
+    mob = currentOption
+end)
 
-Section_MISC:NewButton(
-    "antisunburn",
-    "Disables sunburn",
-    antisunburn
-)
 
-Section_MISC:NewToggle(
-    "Auto-breathing toggle",
-    "Toggles autobreathing on",
-    function(state)
-        if state then
-            getgenv().autobreathing = true
-        else
-            getgenv().autobreathing = false
-        end
-        autobreathing()
+Section:NewSlider("SliderText", "SliderInfo", 10, -10, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    position = s
+end)
+local Section = Tab:NewSection("Auto quests")
+
+Section:NewToggle("Autoquest toggle", "ToggleInfo", function(state)
+    if state then
+       getgenv().autoquest = true
+       autoquest()
+    else
+        getgenv().autoquest = false
+        autoquest()
     end
-)
+end)
+
+Section:NewDropdown("Choose quest", "DropdownInf", questTable, function(currentOption)
+    quest = currentOption
+end)
+local Section = Tab:NewSection("Auto sell corps")
+
+Section:NewToggle("Sell corps toggle", "ToggleInfo", function(state)
+    if state then
+       getgenv().corps = true
+       sellcorps()
+    else
+        getgenv().corps = false
+        sellcorps()
+    end
+end)
+
+Section:NewDropdown("Choose seller", "DropdownInf", sellerTable, function(currentOption)
+    seller = currentOption
+end)
+local Section = Tab:NewSection("Autofarm chests ")
+Section:NewToggle("Chest farm toggle ", "ToggleInfo", function(state)
+    if state then
+       getgenv().chestfarm = true
+       chestfarm()
+    else
+        getgenv().chestfarm = false
+        chestfarm()
+    end
+end)
+
+Section:NewDropdown("Choose chest", "DropdownInf", chestTable, function(currentOption)
+    chest = currentOption
+end)
+
+
+
+
+
+
+
+
+
+
 
 local Tab = Window:NewTab("Teleports")
-local Section_BAD = Tab:NewSection("Become A demon")
-local Section_STW = Tab:NewSection("See through world")
-local Section_Q = Tab:NewSection("Quests")
-local Section_BT = Tab:NewSection("Breathing Trainers")
-local Section_Ar = Tab:NewSection("Areas")
-
-Section_BAD:NewButton(
-    "Demon Turner tp",
-    "Tps to Demon Turner",
-    muzan
-)
-
-Section_Ar:NewDropdown("Area teleports", "Area teleports", areaTable, function(currentOption)
-    area = currentOption
+local Section = Tab:NewSection("Area teleports")
+Section:NewDropdown("Choose area to tp to", "DropdownInf", areaTable, function(currentOption)
+    area1 = currentOption
     areatp()
 end)
 
-Section_STW:NewButton(
-    "STW trainer tp",
-    "Tps to STW trainer",
-    stwtrainer
-)
-Section_STW:NewButton(
-    "First idol(for upgraded STW)",
-    "Tps to third idol",
-    idol1
-)
-Section_STW:NewButton(
-    "Second idol(for upgraded STW)",
-    "Tps to third idol",
-    idol2
-)
-Section_STW:NewButton(
-    "Third idol(for upgraded STW)",
-    "Tps to third idol",
-    idol3
-)
-
-Section_Q:NewButton(
-    "Instant unlock lute(must have lute quest active)",
-    "Completes the lute quest for you instantly",
-    instalute
-)
-
-Section_Q:NewButton(
-    "Lute quest tp",
-    "Tps to Lute quest giver",
-    lutetp
-)
-
-
-Section_Q:NewButton(
-    "Lvl 5 breathing tp",
-    "Tps Lvl 5 breathing giver",
-    lvl5breath
-)
-
-Section_BT:NewDropdown("Trainers teleports", "Trainers teleports", npcTable, function(currentOption)
-    trainer = currentOption
-    trainers2()
+Section:NewDropdown("Talk to npc", "DropdownInf", npcTable, function(currentOption)
+    npc = currentOption
+   talktonpcs()
 end)
 
-local Tab = Window:NewTab("Server hops etc")
-local Section_SH = Tab:NewSection("Server hop")
+Section:NewToggle("Platform toggle (to prevent falling to void)", "ToggleInfo", function(state)
+    if state then
+       getgenv().platform = true
+       platformstand()
+    else
+        getgenv().platform = false
+        platformstand()
+    end
+end)
 
-Section_SH:NewButton(
-    "Server hop",
-    "Hops into another server",
-    Teleport
-)
-Section_SH:NewButton(
-    "Rejoin",
-    "Rejoins",
-    serverhop
-)
+
+local Tab = Window:NewTab("Misc")
+local Section = Tab:NewSection("Misc")
+Section:NewToggle("Infstamina(runnning) toggle ", "ToggleInfo", function(state)
+    if state then
+       getgenv().infstamina = true
+       infstaminarunning()
+    else
+        getgenv().infstamina = false
+        infstaminarunning()
+    end
+end)
+Section:NewToggle("infstamina(Flying) toggle ", "ToggleInfo", function(state)
+    if state then
+       getgenv().infstamina2 = true
+       infstaminaflying()
+    else
+        getgenv().infstamina2 = false
+        infstaminaflying()
+    end
+end)
+
+Section:NewToggle("Noclip toggle ", "ToggleInfo", function(state)
+    if state then
+       getgenv().noclip = true
+       noclip()
+    else
+        getgenv().noclip = false
+        noclip()
+    end
+end)
+
+Section:NewButton("Antiafk", "ButtonInfo", function()
+    antiafk()
+end)
+
+Section:NewButton("Serverhop", "ButtonInfo", function()
+    serverhop()
+end)
 
 local Tab = Window:NewTab("Settings")
-local Section_UI = Tab:NewSection("Settings")
-Section_UI:NewButton(
-    "Anti afk",
-    "Disables afk kick",
-    antiafk
-)
-
-Section_UI:NewButton(
-    "Low graphics mode",
-    "Turns low graphics mode on",
-    lowgraphics
-)
-Section_UI:NewButton(
-    "Removes fog",
-    "Removes fog",
-    removefog
-)
-
-Section_UI:NewKeybind(
-    "Ui toggle",
-    "Toggles Ui",
-    Enum.KeyCode.X,
-    function()
-        Library:ToggleUI()
-    end
-)
+local Section = Tab:NewSection("Settings")
 
 
+Section:NewButton("Potato pc mode", "ButtonInfo", function()
+    lowgraphics()
+end)
 
-
-
-
-
+Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
+	Library:ToggleUI()
+end)
