@@ -356,12 +356,7 @@ end
 end)
 end
 
-local function bank()
 
-    game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("BankFunction"):FireServer(activity ,currency, money)
-    
-
-end
 
 
 local function chestfarm()
@@ -494,21 +489,6 @@ end)
 local Tab = Window:NewTab("Misc")
 local Section = Tab:NewSection("Misc")
 
-
-Section:NewButton("Bank action", "", function()
-    bank()
-end)
-Section:NewTextBox("Amount", "TextboxInfo", function(txt)
-	money = txt
-end)
-
-Section:NewDropdown("Action to do", "DropdownInf", {"Withdraw", "Deposit"}, function(currentOption)
-    activity = currentOption
-end)
-
-Section:NewDropdown("Currency", "DropdownInf", {"Silver", "Gold"}, function(currentOption)
-    currency = currentOption
-end)
 
 
 Section:NewToggle("Infstamina(runnning) toggle ", "ToggleInfo", function(state)
