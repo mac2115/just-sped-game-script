@@ -141,6 +141,12 @@ end
         end
     end
 end
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Make sure to join my discord server!"; -- the title (ofc)
+    Text = "https://discord.gg/7Zd6xWc9M4"; -- what the text says (ofc)
+    Icon = ""; -- the image if u want. 
+    Duration = 20; -- how long the notification should in secounds
+    })
 
 local function noclip()
     game:GetService("RunService").Stepped:Connect(
@@ -385,7 +391,7 @@ end
 end)
 end
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Lee rpg by Mac#0014", "DarkTheme")
+local Window = Library.CreateLib("Lee rpg by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Farms")
 
@@ -539,3 +545,4 @@ end)
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
 	Library:ToggleUI()
 end)
+local Section = Tab:NewSection("Discord server:https://discord.gg/7Zd6xWc9M4")
