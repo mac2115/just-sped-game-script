@@ -337,17 +337,9 @@ while getgenv().autofarm do task.wait()
 
    
         elseif game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0  then
-            
-            while game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0 and getgenv().autofarm do task.wait()
-                
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,2,2)
+            game:GetService("Workspace").Main.Players[mob]:Destroy()
 
-                hold(101, 2)
 
-           
-
-            end
-            
         end
 
         
@@ -391,7 +383,7 @@ end
 end)
 end
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Lee rpg by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
+local Window = Library.CreateLib("Lee rpg v1.2 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Farms")
 
