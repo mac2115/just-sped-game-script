@@ -334,6 +334,7 @@ else
 end
 end)
 end
+
 local function area1()
 if game:GetService("Workspace").Locations:FindFirstChild(Area) then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Locations[Area].CFrame
@@ -354,17 +355,35 @@ local function npc()
     end
 
 
+local function distancecheck()
+    spawn(function()
+    for i,v in pairs(game.Players:GetPlayers()) do
+       if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(v.Character.HumanoidRootPart.Position) < distance then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(141, 125, 615) -- change this
+
+       end
+    end
+end)
+end
+distancecheck()
+
+
 local function autofarm()
 spawn(function()
 if getgenv().autofarm == true  then
-while getgenv().autofarm == true  do task.wait()
+    while getgenv().autofarm == true  do task.wait()
+
+        
     if game:GetService("Workspace").LivingThings:FindFirstChild(mob)   then
-        if game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 and getgenv().autofarm == true then
+        
+        if game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 and getgenv().autofarm  == true and v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.Position) > distance then
             while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 and getgenv().autofarm == true  do task.wait()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,position,0)
             end
-        elseif  game:GetService("Workspace").LivingThings[mob].Humanoid.Health  == 0 and getgenv().autofarm == true  then
-            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 0 and getgenv().autofarm == true do  task.wait()
+
+
+        elseif  game:GetService("Workspace").LivingThings[mob].Humanoid.Health  == 0 and getgenv().autofarm == true or v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.Position) < distance  then
+            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 0 and getgenv().autofarm == true or v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.Position) < distance   do  task.wait()
 
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(141, 125, 615)
            
@@ -372,6 +391,9 @@ while getgenv().autofarm == true  do task.wait()
             end
        
         end
+    
+    
+
     else
         return
     end
@@ -467,6 +489,9 @@ end)
 
 Section:NewSlider("Position", "SliderInfo", 6, -6, function(s) -- 500 (MaxValue) | 0 (MinValue)
     position = s
+end)
+Section:NewSlider("Player distance", "SliderInfo", 20, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    distance = s
 end)
 
 local Tab = Window:NewTab("Teleports")
