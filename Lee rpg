@@ -1,168 +1,147 @@
 getgenv().autofarm = true
-getgenv().noclip = false
-getgenv().killaura = true
-getgenv().killauraford = true
-getgenv().antiafk = true
-getgenv().walkspeed = true
-getgenv().autoequip = true 
-getgenv().findkey = true
-local toolTable = {}
-local npcTable = {}
-local areaTable = {}
-local mobTable = {
-
-"Slayer1",
-"Demon1",
-"Demon2",
-"Boulder",
-"TypeZero"
+getgenv().autoquest = true
+getgenv().platform  = true
+getgenv().noclip = true
+local Part = Instance.new("Part", workspace)
+local mobTable = {"Giant Sand Kip",
+"Sand Kip",
+"Turtling",
+"Goblin",
+"TheFirstDesire",
+"Maxwell",
+"Giant Evil Leech",
+"Abyssal Watcher",
+"Snow Dweller",
+"Rock Pig",
+"Purple Goblin",
+"Rat Kin",
+"Water Turtle",
+"Fire Bird",
+"Cyclops"
+,"Sand Onion"
+,"Stone Slicer",
+"Goblin Archer",
+"Cave Goblin",
+"Abyssal Giant",
+"Cave Sha",
+"Abyssal Skinner",
+"Bandit Gunner",
+"Electro Raptor",
+"Abyssal Puppet",
+"Abyssal Archer",
+"Demon Grunt",
+"Cyclops Bot",
+"Darkling",
+"Cave Rex"
+,
+"Evil Leech",
+"Stone Golem",
+"Sand Golem",
+"Mouse Kin",
+"Sand Warrior",
+"Lightning Entity",
+"Bandit",
+"Bandit Commander",
+"Goblin Commander"
+,"Goblin Commando"
 
 }
+local questTable = {
+"Kippy",
+"Zoe The Farmer"
 
-local function spectate()
-    local UIS, CoreGui, Players = game:GetService("UserInputService"), game:GetService("CoreGui"), game:GetService("Players")
-    local Player = Players.LocalPlayer
-    local PlayerButtons = {}
-    local viewing = Player
-    local viewDied, viewChanged
-    local spectating = false
-    local GUI = game:GetObjects("rbxassetid://7093449497")[1]
-    local Teleport = GUI.Teleport
-    local Template = Teleport.List.Template
-    Template.Visible = false
-    GUI.Parent = CoreGui
-    
-    function dragify(Frame)
-        local startPos, dragPos, dragInput, dragStart, dragToggle
-        local dragSpeed = 0.30
-        
-        local function updateInput(input)
-            local Delta = input.Position - dragStart
-            local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
-            game:GetService("TweenService"):Create(Frame.Parent, TweenInfo.new(dragSpeed), {Position = Position}):Play()
-        end
-        
-        Frame.InputBegan:Connect(function(input)
-            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and UIS:GetFocusedTextBox() == nil then
-                dragToggle = true
-                dragStart = input.Position
-                startPos = Frame.Parent.Position
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragToggle = false
-                    end
-                end)
-            end
-        end)
-        
-        Frame.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                dragInput = input
-            end
-        end)
-        
-        UIS.InputChanged:Connect(function(input)
-            if input == dragInput and dragToggle then
-                updateInput(input)
-            end
-        end)
-    end
-    
-    function addButton(player)
-        local button = Template:Clone()
-        button.Name = player.Name
-        button.Player.Text = player.Name
-        button.Parent = Teleport.List
-        if Teleport.Search.Text == "" or button.Name:sub(1, Teleport.Search.Text:len()):lower() == Teleport.Search.Text:lower() then
-            button.Visible = true
-        end
-        button.Goto.MouseButton1Click:Connect(function()
-            Player.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
-        end)
-        button.Spectate.MouseButton1Click:Connect(function()
-            if spectating and player.Name == viewing.Name then
-                spectating = false
-                if PlayerButtons[viewing.Name] then
-                    PlayerButtons[viewing.Name].Spectate.BackgroundColor3 = Color3.fromRGB(121, 121, 121)
-                end
-                if viewing ~= Player then
-                    viewing = Player
-                end
-                if viewDied then
-                    viewDied:Disconnect()
-                    viewChanged:Disconnect()
-                end
-                workspace.CurrentCamera.CameraSubject = Player.Character
-            elseif not spectating or player.Name ~= viewing.Name then
-                spectating = true
-                if PlayerButtons[viewing.Name] then
-                    PlayerButtons[viewing.Name].Spectate.BackgroundColor3 = Color3.fromRGB(121, 121, 121)
-                end
-                button.Spectate.BackgroundColor3 = Color3.fromRGB(91, 91, 91)
-                if viewDied then
-                    viewDied:Disconnect()
-                    viewChanged:Disconnect()
-                end
-                viewing = player
-                workspace.CurrentCamera.CameraSubject = viewing.Character
-                viewDied = player.CharacterAdded:Connect(function()
-                    repeat wait() until player.Character ~= nil and player.Character:FindFirstChild("HumanoidRootPart")
-                    workspace.CurrentCamera.CameraSubject = viewing.Character
-                end)
-                    viewChanged = workspace.CurrentCamera:GetPropertyChangedSignal("CameraSubject"):Connect(function()
-                    workspace.CurrentCamera.CameraSubject = viewing.Character
-                end)
-            end
-        end)
-        PlayerButtons[player.Name] = button
-    end
-    
-    Players.PlayerAdded:Connect(function(player)
-        if player ~= Player then
-            addButton(player)
-        end
-    end)
-    
-    Players.PlayerRemoving:Connect(function(player)
-        if player ~= Player then
-            PlayerButtons[player.Name]:Destroy()
-            PlayerButtons[player.Name] = nil
-        end
-    end)
-    
-    for _,player in pairs(Players:GetPlayers()) do
-        if player ~= Player then
-            addButton(player)
-        end
-    end
-    
-    Teleport.Search:GetPropertyChangedSignal("Text"):Connect(function()
-        for _,button in pairs(PlayerButtons) do
-            local matches = Teleport.Search.Text == "" or button.Name:sub(1, Teleport.Search.Text:len()):lower() == Teleport.Search.Text:lower()
-            if button and matches then
-                button.Visible = true
-            elseif button and not matches then
-                button.Visible = false
-            end
-        end
-    end)
-    
-    dragify(Teleport.Topbar)
+}
+local areaTable = {}
+local npcTable = {}
 
+
+
+local PlaceID = game.PlaceId
+local AllIDs = {}
+local foundAnything = ""
+local actualHour = os.date("!*t").hour
+local Deleted = false
+
+local File = pcall(function()
+    AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+end)
+if not File then
+    table.insert(AllIDs, actualHour)
+    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
 end
-local function removefog()
-    local s = Instance.new("PointLight", game.Players.LocalPlayer.Character.Head)
-    s.Brightness = 0.3
-    s.Range = 100
-    game.Lighting.Changed:connect(function()
-    game.Lighting.TimeOfDay = "14:00:00"
-    game.Lighting.FogEnd = 9999
-    game.Lighting.Brightness = 2
-    game.Lighting.ColorCorrection.Brightness = 0.1
-    game.Lighting.ColorCorrection.Saturation = 0.1
-    game.Lighting.Bloom.Intensity = 0.1
-    end)
 
+ local function TPReturner()
+    local Site;
+    if foundAnything == "" then
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+    else
+        Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+    end
+    local ID = ""
+    if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+        foundAnything = Site.nextPageCursor
+    end
+    local num = 0;
+    for i,v in pairs(Site.data) do
+        local Possible = true
+        ID = tostring(v.id)
+        if tonumber(v.maxPlayers) > tonumber(v.playing) then
+            for _,Existing in pairs(AllIDs) do
+                if num ~= 0 then
+                    if ID == tostring(Existing) then
+                        Possible = false
+                    end
+                else
+                    if tonumber(actualHour) ~= tonumber(Existing) then
+                        local delFile = pcall(function()
+                            delfile("NotSameServers.json")
+                            AllIDs = {}
+                            table.insert(AllIDs, actualHour)
+                        end)
+                    end
+                end
+                num = num + 1
+            end
+            if Possible == true then
+                table.insert(AllIDs, ID)
+                wait()
+                pcall(function()
+                    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                    wait()
+                    game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+                end)
+                wait(4)
+            end
+        end
+    end
+end
+
+local function noclip()
+    game:GetService("RunService").Stepped:Connect(
+        function()
+            if getgenv().noclip then
+                pcall(
+                    function()
+                        for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                            if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                                v.CanCollide = false
+                            end
+                        end
+                    end
+                )
+            else
+                pcall(
+                    function()
+                        for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                            if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                                v.CanCollide = true
+                            end
+                        end
+                    end
+                )
+            end
+        end
+    )
 end
 
 local function lowgraphics()
@@ -186,420 +165,213 @@ local function lowgraphics()
 end
 
 
-local function walkspeed()
-    spawn(
-        function()
-            if getgenv().walkspeed == true then
-                while getgenv().walkspeed do
-                    task.wait()
-                    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = amount
-                end
-            else
-                return
+ local function serverhop()
+    while wait() do
+        pcall(function()
+            TPReturner()
+            if foundAnything ~= "" then
+                TPReturner()
             end
-        end
-    )
+        end)
+    end
 end
 
-local function antisunburn()
-    spawn(function()
-    local __Namecall
-    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
-        local Args, Method = {...}, getnamecallmethod()
-        
-        if tostring(self.Name):match('Die') and tostring(Method):match('FireServer') then
-            return
-        end
-        
-        return __Namecall(self, ...)
-    end))
-
-end)
-end
-
-local function chatlogger()
-spawn(function()
-    loadstring(game:HttpGet("https://pastebin.com/raw/stggPUBM", true))()
-end)
-end
 
 local function antiafk()
     spawn(function()
-if getgenv().antiafk == true then
-while getgenv().antiafk do task.wait()
+
     for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
         v:Disable()
     end
-end
-
-else
-    return
-end
-
 end)
-end
-
-local function findkey()
-    if getgenv().findkey == true then
-        while getgenv().findkey do task.wait()
-if game:GetService("Workspace").Keys:FindFirstChild("Key")  then
-    getgenv().autofarm = false
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Keys.Key.CD.CFrame *CFrame.new(0,3,0)
-end
-end
-else
-    return
-end
-end
-
-local function haori()
-    game:GetService("ReplicatedStorage").Remotes.GetTailorMenu:FireServer()
-end
-local function instantslayer()
-   
-    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PurchaseItem"):FireServer("Nichirin Katana")
-    
-end
 
 
-local function noclip() -- simple noclip function self explanatory 
-    game:GetService("RunService").Stepped:Connect(function()
-        if getgenv().noclip then
-            pcall(function()
-                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
-                        v.CanCollide = false
-                    end
-                end
-            end)
-        else
-            pcall(function()
-                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
-                        v.CanCollide = true
-   
-        end
-   
-     end
-    end)
-    end
-    end)
-    end
-
-local function npcrefresh()
-    spawn(function()
-for _,v in pairs(game:GetService("Workspace").NPCS:GetChildren()) do --same thing as in mobs
-    if v:IsA("Model")  then
-        table.insert(npcTable, v.Name)
-    end
- end
-end)
 end
 
 local function area()
     spawn(function()
-for _,v in pairs(game:GetService("Workspace").Locations:GetChildren()) do --same thing as in mobs
+for _,v in pairs(game:GetService("Workspace").Main.Areas:GetChildren()) do --same thing as in mobs
     if v:IsA("Part") then
         table.insert(areaTable, v.Name)
     end
  end
 end)
 end
-local function toolrefresh()
+
+local function npcs()
     spawn(function()
-for _,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do --same thing as in mobs
-    if v:IsA("Tool")  then
-        table.insert(toolTable, v.Name)
+for _,v in pairs(game:GetService("Workspace").GameObjects.NPCs:GetChildren()) do --same thing as in mobs
+    if v:IsA("Model") then
+        table.insert(npcTable, v.Name)
     end
  end
 end)
 end
-toolrefresh()
-area()
-npcrefresh()
 
-local function autoequip()
+npcs()
+area()
+
+
+
+local function talktonpcs()
 spawn(function()
-if getgenv().autoequip == true then
-while getgenv().autoequip do task.wait()
-    for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-        if v.name == tool then
-            v.Parent = game.Players.LocalPlayer.Character
-        end
+
+    game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("TalkToNPC"):FireServer(npc,"")
+
+end)
+end
+
+local function platformstand()
+if getgenv().platform == true then
+    Part.Anchored = true
+    Part.Size = Vector3.new(10, .001, 10)
+    while getgenv().platform do
+        wait()
+    Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3.02, 0)
     end
 
+else
+    return
+end
+end
+local function areatp()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Areas[area1].CFrame
+
+end
+
+
+
+
+local function autoquest()
+if getgenv().autoquest then
+while getgenv().autoquest do task.wait()
+
+    game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("TalkToNPC"):FireServer(quest,"")
 end
 else
     return
 end
-end)
 end
-
-local function area1()
-if game:GetService("Workspace").Locations:FindFirstChild(Area) then
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Locations[Area].CFrame
-else 
-    return
-end
-end
-
-local function npc()
-
-    if game:GetService("Workspace").NPCS:FindFirstChild(Npc) then
-        
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").NPCS[Npc].HumanoidRootPart.CFrame
-    else
-        return
-    end
-    
-    end
-
-
-local function distancecheck()
-    spawn(function()
-    for i,v in pairs(game.Players:GetPlayers()) do
-       if v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(v.Character.HumanoidRootPart.Position) < distance then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(141, 125, 615) -- change this
-
-       end
-    end
-end)
-end
-distancecheck()
-
-
 local function autofarm()
 spawn(function()
-if getgenv().autofarm == true  then
-    while getgenv().autofarm == true  do task.wait()
-
-        
-    if game:GetService("Workspace").LivingThings:FindFirstChild(mob)   then
-        
-        if game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 and getgenv().autofarm  == true and v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.Position) > distance then
-            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health >= 1 and getgenv().autofarm == true  do task.wait()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.CFrame *CFrame.new(0,position,0)
-            end
-
-
-        elseif  game:GetService("Workspace").LivingThings[mob].Humanoid.Health  == 0 and getgenv().autofarm == true or v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.Position) < distance  then
-            while  game:GetService("Workspace").LivingThings[mob].Humanoid.Health == 0 and getgenv().autofarm == true or v ~= game.Players.LocalPlayer and game.Players.LocalPlayer:DistanceFromCharacter(game:GetService("Workspace").LivingThings[mob].HumanoidRootPart.Position) < distance   do  task.wait()
-
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(141, 125, 615)
-           
-
-            end
+if getgenv().autofarm then
+while getgenv().autofarm do task.wait()
+    if game:GetService("Workspace").Main.Players:FindFirstChild(mob)    then
        
+        if game:GetService("Workspace").Main.Players[mob].Humanoid.Health > 0 then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,position)
+    game:GetService("Players").LocalPlayer.Character.ClientStateReplication.M1:FireServer(true)
+        elseif game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0  then 
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-706, -578, -1453)
         end
-    
-    
 
+        
     else
         return
     end
-end
 
-else
-    return
-
-end
-
-end)
-end
-
-local function tpaway()
-    getgenv().autofarm = false
-    autofarm()
-    wait(0.5)
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame =  CFrame.new(141, 125, 615)
-
-    end
-
-
-local function killaurafordemons()
-    spawn(function()
-if getgenv().killauraford == true then
-while getgenv().killauraford do task.wait()
-    game:GetService("Players").LocalPlayer.Character.Character.Remotes.M1:FireServer()
 end
 else
     return
 end
 end)
 end
-
-
-local function killaura()
-    spawn(function()
-    if getgenv().killaura == true then
-    while getgenv().killaura do task.wait()
-        game:GetService("Players").LocalPlayer.Character.Character.Remotes.M2:FireServer()
-    end
-    else
-        return
-    end
-    end)
-end
-
 
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Some farming by Mac#0014", "DarkTheme")
+local Window = Library.CreateLib("Lee rpg by Mac#0014", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
-local Section = Tab:NewSection("Autofarms")
+local Section = Tab:NewSection("Farms")
 
-Section:NewButton("Tp away", "ButtonInfo", function()
-    tpaway()
-end)
 
 Section:NewToggle("Autofarm toggle", "ToggleInfo", function(state)
     if state then
-        getgenv().autofarm = true 
-        autofarm()
+       getgenv().autofarm = true
+       autofarm()
     else
         getgenv().autofarm = false
         autofarm()
     end
 end)
 
-local Section = Tab:NewSection("Killauras")
-Section:NewToggle("Killaura (use as demon) toggle", "ToggleInfo", function(state)
-    if state then
-        getgenv().killauraford = true 
-        killaurafordemons()
-    else
-        getgenv().killauraford = false
-        killaurafordemons()
-    end
-end)
-
-Section:NewToggle("Killaura (use as slayer) toggle", "ToggleInfo", function(state)
-    if state then
-        getgenv().killaura = true 
-        killaura()
-    else
-        getgenv().killaura = false
-        killaura()
-    end
-end)
-local Section = Tab:NewSection("Autofarm settings")
-Section:NewDropdown("Choose mob to farm", "DropdownInf", mobTable, function(currentOption)
+Section:NewDropdown("Choose mob", "DropdownInf", mobTable, function(currentOption)
     mob = currentOption
 end)
 
-Section:NewSlider("Position", "SliderInfo", 6, -6, function(s) -- 500 (MaxValue) | 0 (MinValue)
+
+Section:NewSlider("SliderText", "SliderInfo", 10, -10, function(s) -- 500 (MaxValue) | 0 (MinValue)
     position = s
 end)
-Section:NewSlider("Player distance", "SliderInfo", 20, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
-    distance = s
+local Section = Tab:NewSection("Auto quests")
+
+Section:NewToggle("Autoquest toggle", "ToggleInfo", function(state)
+    if state then
+       getgenv().autoquest = true
+       autoquest()
+    else
+        getgenv().autoquest = false
+        autoquest()
+    end
+end)
+
+Section:NewDropdown("Choose quest", "DropdownInf", questTable, function(currentOption)
+    quest = currentOption
 end)
 
 local Tab = Window:NewTab("Teleports")
-local Section = Tab:NewSection("Npc teleports")
-
-Section:NewDropdown("Choose npc to tp to", "DropdownInf", npcTable, function(currentOption)
-    Npc = currentOption
-    npc()
-end)
-
 local Section = Tab:NewSection("Area teleports")
 Section:NewDropdown("Choose area to tp to", "DropdownInf", areaTable, function(currentOption)
-    Area = currentOption
-    area1()
+    area1 = currentOption
+    areatp()
+end)
+
+Section:NewDropdown("Talk to npc", "DropdownInf", npcTable, function(currentOption)
+    npc = currentOption
+   talktonpcs()
+end)
+
+Section:NewToggle("Platform toggle (to prevent falling to void)", "ToggleInfo", function(state)
+    if state then
+       getgenv().platform = true
+       platformstand()
+    else
+        getgenv().platform = false
+        platformstand()
+    end
 end)
 
 
 local Tab = Window:NewTab("Misc")
-local Section = Tab:NewSection("Some stuff")
-Section:NewToggle("Autoequip toggle", "ToggleInfo", function(state)
+local Section = Tab:NewSection("Misc")
+Section:NewToggle("Noclip toggle ", "ToggleInfo", function(state)
     if state then
-        getgenv().autoequip = true
-        autoequip()
-    else
-        getgenv().autoequip = false
-    autoequip()
-    end
-end)
-Section:NewDropdown("Choose tool to equip", "DropdownInf", toolTable, function(currentOption)
-    tool = currentOption
-   
-end)
-local Section = Tab:NewSection("Toggles")
-Section:NewToggle("Key teleport toggle", "ToggleInfo", function(state)
-    if state then
-        getgenv().findkey = true
-       findkey()
-    else
-        getgenv().findkey = false
-        findkey()
-    end
-end)
-
-
-Section:NewToggle("Noclip toggle", "ToggleInfo", function(state)
-    if state then
-        getgenv().noclip = true
-        noclip()
+       getgenv().noclip = true
+       noclip()
     else
         getgenv().noclip = false
         noclip()
     end
 end)
 
-Section:NewToggle("Antiafk toggle", "ToggleInfo", function(state)
-    if state then
-        getgenv().antiafk = true
-       antiafk()
-    else
-        getgenv().antiafk = false
-        antiafk()
-    end
-end)
-Section:NewToggle("Speed toggle", "ToggleInfo", function(state)
-    if state then
-        getgenv().walkspeed = true
-       walkspeed()
-    else
-        getgenv().walkspeed = false
-        walkspeed()
-    end
-end)
-Section:NewSlider("Speed amount", "Speed amount", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
-    amount = s
+Section:NewButton("Antiafk", "ButtonInfo", function()
+    antiafk()
 end)
 
-local Section = Tab:NewSection("Other stuff")
-Section:NewButton("Antisunburn", "ButtonInfo", function()
-    antisunburn()
- end)
- 
-
-Section:NewButton("Free custom haori", "ButtonInfo", function()
-    haori()
+Section:NewButton("Serverhop", "ButtonInfo", function()
+    serverhop()
 end)
 
-Section:NewButton("Instant slayer (need 100 money)", "ButtonInfo", function()
-    instantslayer()
+local Tab = Window:NewTab("Settings")
+local Section = Tab:NewSection("Settings")
+
+
+Section:NewButton("Potato pc mode", "ButtonInfo", function()
+    lowgraphics()
 end)
-local Tab = Window:NewTab("Ui settings")
-local Section = Tab:NewSection("Ui binds")
 
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
 	Library:ToggleUI()
 end)
-local Section = Tab:NewSection("Additional uis")
-Section:NewButton("Chat logger", "Chat logger", function()
-    chatlogger()
-end)
 
-Section:NewButton("Spectating ui", "ButtonInfo", function()
-    spectate()
-end)
-local Section = Tab:NewSection("Optimalization")
-Section:NewButton("Fps boost mode", "ButtonInfo", function()
-    lowgraphics()
-end)
 
-Section:NewButton("Remove fog", "ButtonInfo", function()
-    removefog()
-end)
+
