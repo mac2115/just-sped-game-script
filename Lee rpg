@@ -2,9 +2,7 @@ getgenv().autofarm = true
 getgenv().autoquest = true
 getgenv().platform  = true
 getgenv().noclip = true
-getgenv().infstamina = true
 getgenv().corps = true
-getgenv().infstamina2 = true
 getgenv().chestfarm = true
 getgenv().regen = true
 
@@ -199,26 +197,46 @@ local function lowgraphics()
 end
 local function infstaminarunning()
 if getgenv().infstamina == true then
-while getgenv().infstamina do task.wait()
-   
-    game:GetService("Players").LocalPlayer.Character.Events.Running:FireServer(false)
+    local __Namecall
+    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
+        local Args, Method = {...}, getnamecallmethod()
+        
+        if tostring(self.Name):match('Running') and tostring(Method):match('FireServer') then
+            return
+        end
+        
+        return __Namecall(self, ...)
+    end))
 
-end
 else
     return
 end
+
 end
 local function infstaminaflying()
     if getgenv().infstamina2 == true then
-    while getgenv().infstamina2 do task.wait()
+
        
-        game:GetService("Players").LocalPlayer.Character.Events.Flying:FireServer(false)
-    
-    end
+        local __Namecall
+    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
+        local Args, Method = {...}, getnamecallmethod()
+        
+        if tostring(self.Name):match('Flying') and tostring(Method):match('FireServer') then
+            return
+        end
+        
+        return __Namecall(self, ...)
+    end))
+
+
     else
         return
+    
     end
+    
+    
     end
+    
 
  local function serverhop()
     while wait() do
@@ -518,22 +536,13 @@ Section:NewToggle("Always regen Hp ", "ToggleInfo", function(state)
     end
 
 end)
-
-
-Section:NewToggle("Infstamina(runnning) toggle ", "ToggleInfo", function(state)
-   
-       getgenv().infstamina = state
-       infstaminarunning()
-    
+Section:NewButton("Inf stamina while running", "ButtonInfo", function()
+    infstaminarunning()
 end)
 
-Section:NewToggle("infstamina(Flying) toggle ", "ToggleInfo", function(state)
-    
-       getgenv().infstamina2 = state
-       infstaminaflying()
-   
+Section:NewButton("Inf stamina while flying", "ButtonInfo", function()
+    infstaminaflying()
 end)
-
 Section:NewToggle("Noclip toggle ", "ToggleInfo", function(state)
     
        getgenv().noclip = state
