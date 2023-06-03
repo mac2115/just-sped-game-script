@@ -242,10 +242,12 @@ local function regen()
 
 local function antiafk()
     spawn(function()
-
-    for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
-        v:Disable()
-    end
+        wait(3)
+        local VirtualUser=game:service'VirtualUser'
+        game:service('Players').LocalPlayer.Idled:connect(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+        end)
 end)
 
 
