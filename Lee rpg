@@ -195,6 +195,20 @@ local function lowgraphics()
         end
 
 end
+local function dashing()
+    local __Namecall
+    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
+        local Args, Method = {...}, getnamecallmethod()
+        
+        if tostring(self.Name):match('Dashing') and tostring(Method):match('FireServer') then
+            return
+        end
+        
+        return __Namecall(self, ...)
+    end))
+
+end
+
 local function infstaminarunning()
 if getgenv().infstamina == true then
     local __Namecall
@@ -536,6 +550,10 @@ Section:NewToggle("Always regen Hp ", "ToggleInfo", function(state)
     end
 
 end)
+Section:NewButton("Make dash not take stamina", "ButtonInfo", function()
+   dashing()
+end)
+
 Section:NewButton("Inf stamina while running", "ButtonInfo", function()
     infstaminarunning()
 end)
