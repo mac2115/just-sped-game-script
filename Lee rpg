@@ -285,6 +285,7 @@ spawn(function()
 
 end)
 end
+
 local function sellcorps()
 if getgenv().corps == true then 
 
@@ -329,12 +330,6 @@ else
 end
 end
 
-
-local function hold(keyCode, time)
-  vim:SendKeyEvent(true, keyCode, false, game)
-  task.wait(time)
-  vim:SendKeyEvent(false, keyCode, false, game)
-end
 
 
 local function autofarm()
@@ -388,7 +383,7 @@ end
 
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Lee rpg v1.3 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
+local Window = Library.CreateLib("Lee rpg v1.4 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Farms")
 
@@ -497,6 +492,8 @@ Section:NewDropdown("Talk to npc", "DropdownInf", npcTable, function(currentOpti
     npc = currentOption
    talktonpcs()
 end)
+
+
 
 Section:NewToggle("Platform toggle (to prevent falling to void)", "ToggleInfo", function(state)
   
