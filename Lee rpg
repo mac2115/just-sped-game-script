@@ -6,6 +6,7 @@ getgenv().corps = true
 getgenv().chestfarm = true
 getgenv().regen = true
 getgenv().combat = true
+getgenv().nostun = true
 local Part = Instance.new("Part", workspace)
 local vim = game:service("VirtualInputManager")
 local mobTable = {"Giant Sand Kip",
@@ -210,7 +211,7 @@ local function dashing()
 end
 
 local function infstaminarunning()
-if getgenv().infstamina == true then
+
     local __Namecall
     __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
         local Args, Method = {...}, getnamecallmethod()
@@ -222,13 +223,12 @@ if getgenv().infstamina == true then
         return __Namecall(self, ...)
     end))
 
-else
-    return
-end
 
 end
+
+
 local function infstaminaflying()
-    if getgenv().infstamina2 == true then
+ 
 
        
         local __Namecall
@@ -243,14 +243,18 @@ local function infstaminaflying()
     end))
 
 
-    else
-        return
     
     end
     
     
-    end
     
+    local function nostun()
+
+if getgenv().nostun == true then
+        game:GetService("Workspace").Main.Players.maciox5.States.Stunned.Value = false
+
+end
+    end
 
  local function serverhop()
     while wait() do
@@ -379,7 +383,7 @@ if getgenv().autofarm then
     if game:GetService("Workspace").Main.Players:FindFirstChild(mob)    then
        
         if game:GetService("Workspace").Main.Players[mob].Humanoid.Health > 0 then
-            
+
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,position)
     game:GetService("Players").LocalPlayer.Character.ClientStateReplication.M1:FireServer(true)
         elseif game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0  then
@@ -559,6 +563,19 @@ Section:NewToggle("Never be in danger ", "ToggleInfo", function(state)
 
 end)
 
+Section:NewToggle("No stun(allows you to move) ", "ToggleInfo", function(state)
+    getgenv().nostun = state
+       
+    while true do
+        task.wait()
+        if getgenv().nostun == false then
+            break
+        end
+    
+        nostun()
+    end
+
+end)
 
 Section:NewToggle("Always regen Hp ", "ToggleInfo", function(state)
     getgenv().regen = state
@@ -573,6 +590,7 @@ Section:NewToggle("Always regen Hp ", "ToggleInfo", function(state)
     end
 
 end)
+
 Section:NewButton("Make dash not take stamina", "ButtonInfo", function()
    dashing()
 end)
