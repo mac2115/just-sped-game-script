@@ -219,7 +219,7 @@ end
     local function nostun()
 
 if getgenv().nostun == true then
-        game:GetService("Workspace").Main.Players.LocalPlayer.States.Stunned.Value = false
+    game:GetService('Players').LocalPlayer.Character.States.Stunned.Value = false
 
 end
     end
@@ -238,7 +238,7 @@ end
 local function notindanger()
 if getgenv().combat == true then
     
-    game:GetService("Workspace").Main.Players.LocalPlayer.States.InDanger.Value  = false
+    game:GetService('Players').LocalPlayer.Character.States.InDanger.Value  = false
 
 end
    
