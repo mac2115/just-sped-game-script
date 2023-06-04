@@ -7,6 +7,7 @@ getgenv().chestfarm = true
 getgenv().regen = true
 getgenv().combat = true
 getgenv().nostun = true
+getgenv().nocooldown = true
 local Part = Instance.new("Part", workspace)
 local vim = game:service("VirtualInputManager")
 local mobTable = {"Giant Sand Kip",
@@ -196,6 +197,18 @@ local function lowgraphics()
         end
 
 end
+
+
+local function nocooldown()
+if getgenv().nocooldown then
+
+    game:GetService('Players').LocalPlayer.Character.States.GCD.Value = false
+
+else
+    return
+end
+end
+
 
 
 
@@ -517,6 +530,24 @@ end)
 
 local Tab = Window:NewTab("Misc")
 local Section = Tab:NewSection("Misc")
+
+Section:NewToggle(
+    "No cooldown m1's",
+    "Toggles no cooldown m1's",
+    function(state)
+        getgenv().nocooldown = state
+       
+        while true do
+            task.wait()
+            if getgenv().nocooldown == false then
+                break
+            end
+        
+            nocooldown()
+        end
+    end
+)
+
 Section:NewToggle("Never be in danger ", "ToggleInfo", function(state)
     getgenv().combat = state
        
