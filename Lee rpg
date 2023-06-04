@@ -8,6 +8,7 @@ getgenv().regen = true
 getgenv().combat = true
 getgenv().nostun = true
 getgenv().nocooldown = true
+getgenv().fruitfarm = true
 local Part = Instance.new("Part", workspace)
 local vim = game:service("VirtualInputManager")
 local mobTable = {"Giant Sand Kip",
@@ -73,7 +74,9 @@ local areaTable = {}
 local npcTable = {}
 local sellerTable = {
     "Corpse Harvester",
-"YungSkubs, Butcher"
+"YungSkubs, Butcher",
+"Scarlet Scarifice"
+
 }
 
 local chestTable = {
@@ -82,7 +85,17 @@ local chestTable = {
 
 
 }
+local fruitTable = {
+"Apple",
+"Pear",
+"Orange",
+"Pineapple"
 
+
+
+
+
+}
 
 local PlaceID = game.PlaceId
 local AllIDs = {}
@@ -257,13 +270,66 @@ end
    
 
 end
+
+
+local function fruitfarm()
+    if getgenv().fruitfarm == true  then
+        if fruit == "Orange" or "Apple" or "Pear" then
+       
+        for _,v in pairs(game:GetService("Workspace")["Riza Fruit Tree"]:GetDescendants()) do 
+            if v:IsA("Part")  and  v.Name == fruit and v:FindFirstChild("ProximityPrompt")  then
+            
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+                fireproximityprompt(v.ProximityPrompt, 1, true)
+
+            elseif  v:IsA("Part")  and  v.Name == "Trunk" and v:FindFirstChild("ProximityPrompt") then
+
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            fireproximityprompt(v.ProximityPrompt, 1, true)
+
+        
+         end
+         
+
+
+
+       end
+
+    end
+else
+    
+return
+end
+
+
+end
+
+
+
+
 local function regen()
     if getgenv().regen == true then 
     
     game:GetService("Workspace").Main.Players.LocalPlayer.States.Regen = true
     end
     end
+    local function depall()
+ 
+   
+        game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("BankFunction"):FireServer("Deposit","Silver", math.huge)
+        
+        
+        
+        end
 
+        local function withdall()
+
+
+            game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("BankFunction"):FireServer("Withdraw","Silver", math.huge)
+            
+            
+            
+            end
 
 local function antiafk()
     spawn(function()
@@ -280,7 +346,7 @@ end
 
 local function area()
     spawn(function()
-for _,v in pairs(game:GetService("Workspace").Main.Areas:GetChildren()) do --same thing as in mobs
+for _,v in pairs(game:GetService("Workspace").Main.Areas:GetChildren()) do 
     if v:IsA("Part") then
         table.insert(areaTable, v.Name)
     end
@@ -290,7 +356,7 @@ end
 
 local function npcs()
     spawn(function()
-for _,v in pairs(game:GetService("Workspace").GameObjects.NPCs:GetChildren()) do --same thing as in mobs
+for _,v in pairs(game:GetService("Workspace").GameObjects.NPCs:GetChildren()) do 
     if v:IsA("Model") then
         table.insert(npcTable, v.Name)
     end
@@ -368,15 +434,20 @@ if getgenv().autofarm then
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,position)
     game:GetService("Players").LocalPlayer.Character.ClientStateReplication.M1:FireServer(true)
         elseif game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0  then
-        
-            game:GetService("Workspace").Main.Players[mob]:Destroy()
+
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,2)
+
+            fireproximityprompt(game:GetService("Workspace").Main.Players[mob].Torso.ProximityPrompt, 1, true)
 
 
         end
 
         
     else
-        return
+        
+
+
+
     end
 
 
@@ -409,7 +480,7 @@ end
 
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Lee rpg v1.5 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
+local Window = Library.CreateLib("Lee rpg v1.60 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Farms")
 
@@ -465,7 +536,7 @@ Section:NewToggle("Sell corps toggle", "ToggleInfo", function(state)
     getgenv().sellcorps = state
        
     while true do
-        task.wait()
+        task.wait(2)
         if getgenv().sellcorps == false then
             break
         end
@@ -499,11 +570,25 @@ Section:NewDropdown("Choose chest", "DropdownInf", chestTable, function(currentO
     chest = currentOption
 end)
 
+local Section = Tab:NewSection("Fruit autofarm")
 
+Section:NewToggle("Fruit farm toggle(not finished) ", "ToggleInfo", function(state)
+    getgenv().fruitfarm = state
+       
+    while true do
+        task.wait()
+        if getgenv().fruitfarm == false then
+            break
+        end
+    
+        fruitfarm()
+    end
 
+end)
 
-
-
+Section:NewDropdown("Choose fruit", "DropdownInf", fruitTable, function(currentOption)
+    fruit = currentOption
+end)
 
 
 
@@ -529,6 +614,18 @@ end)
 
 
 local Tab = Window:NewTab("Misc")
+
+local Section = Tab:NewSection("Banking")
+
+Section:NewButton("Deposit all", "ButtonInfo", function()
+    depall()
+end)
+
+Section:NewButton("Withdraw all", "ButtonInfo", function()
+    withdall()
+end)
+
+
 local Section = Tab:NewSection("Misc")
 
 Section:NewToggle(
@@ -602,13 +699,7 @@ Section:NewToggle("Noclip toggle ", "ToggleInfo", function(state)
     
 end)
 
-Section:NewButton("Antiafk", "ButtonInfo", function()
-    antiafk()
-end)
 
-Section:NewButton("Serverhop", "ButtonInfo", function()
-    serverhop()
-end)
 
 local Tab = Window:NewTab("Settings")
 local Section = Tab:NewSection("Settings")
@@ -616,6 +707,14 @@ local Section = Tab:NewSection("Settings")
 
 Section:NewButton("Potato pc mode", "ButtonInfo", function()
     lowgraphics()
+end)
+
+Section:NewButton("Antiafk", "ButtonInfo", function()
+    antiafk()
+end)
+
+Section:NewButton("Serverhop", "ButtonInfo", function()
+    serverhop()
 end)
 
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
