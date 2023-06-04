@@ -196,62 +196,30 @@ local function lowgraphics()
         end
 
 end
-local function dashing()
-    local __Namecall
-    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
-        local Args, Method = {...}, getnamecallmethod()
+
+
+
+local function infstamina()
+    local __namecall
+__namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
+    local args, method = {...}, getnamecallmethod()
         
-        if tostring(self.Name):match('Dashing') and tostring(Method):match('FireServer') then
-            return
-        end
-        
-        return __Namecall(self, ...)
-    end))
-
-end
-
-local function infstaminarunning()
-
-    local __Namecall
-    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
-        local Args, Method = {...}, getnamecallmethod()
-        
-        if tostring(self.Name):match('Running') and tostring(Method):match('FireServer') then
-            return
-        end
-        
-        return __Namecall(self, ...)
-    end))
-
-
-end
-
-
-local function infstaminaflying()
- 
-
+    if table.find({'Running', 'Dashing', 'Flying'}, self.Name) and tostring(method):match('FireServer') then
        
-        local __Namecall
-    __Namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
-        local Args, Method = {...}, getnamecallmethod()
-        
-        if tostring(self.Name):match('Flying') and tostring(Method):match('FireServer') then
-            return
-        end
-        
-        return __Namecall(self, ...)
-    end))
 
-
-    
+        return
+  
     end
-    
-    
+
+    return __namecall(self, ...)
+
+end))
+end   
     
     local function nostun()
 
 if getgenv().nostun == true then
-        game:GetService("Workspace").Main.Players.maciox5.States.Stunned.Value = false
+        game:GetService("Workspace").Main.Players.LocalPlayer.States.Stunned.Value = false
 
 end
     end
@@ -270,7 +238,7 @@ end
 local function notindanger()
 if getgenv().combat == true then
     
-    game:GetService("Workspace").Main.Players.maciox5.States.InDanger.Value  = false
+    game:GetService("Workspace").Main.Players.LocalPlayer.States.InDanger.Value  = false
 
 end
    
@@ -591,17 +559,11 @@ Section:NewToggle("Always regen Hp ", "ToggleInfo", function(state)
 
 end)
 
-Section:NewButton("Make dash not take stamina", "ButtonInfo", function()
-   dashing()
+Section:NewButton("Infinite stamina for everything", "ButtonInfo", function()
+   infstamina()
 end)
 
-Section:NewButton("Inf stamina while running", "ButtonInfo", function()
-    infstaminarunning()
-end)
 
-Section:NewButton("Inf stamina while flying", "ButtonInfo", function()
-    infstaminaflying()
-end)
 Section:NewToggle("Noclip toggle ", "ToggleInfo", function(state)
     
        getgenv().noclip = state
