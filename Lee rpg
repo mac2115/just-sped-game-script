@@ -702,4 +702,7 @@ end)
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
 	Library:ToggleUI()
 end)
-local Section = Tab:NewSection("Discord server:discord.gg/macscripts")
+
+Section:NewButton("Copy discord invite", "ButtonInfo", function()
+    setclipboard("discord.gg/macscripts")
+end)
