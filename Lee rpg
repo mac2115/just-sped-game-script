@@ -86,10 +86,7 @@ local chestTable = {
 
 }
 local fruitTable = {
-"Apple",
-"Pear",
-"Orange",
-"Pineapple"
+    "Strawberry Plant",  "Watermelon Plant", "Pineapple Plant", "Gravity Rock", "Gravity Fruit", "Gravity Essence", "Birch", "BlueBows", "Deep Forest Twine", "Forest Shell", "MageBerry Bush", "Melon Plant", "Riza Fruit Tree", "Apple", "Orange", "Pear", "Sand Stone", "Abyssal Shell", "Abyss Coral", "Artic Shell", "Beach Shell", "Green", "Green Bush 2", "Green Bush 3", "Large Green"
 
 
 
@@ -296,9 +293,7 @@ local function fruitfarm()
        end
 
     end
-else
-    
-return
+
 end
 
 
@@ -383,8 +378,7 @@ if getgenv().corps == true then
 
     game:GetService("ReplicatedStorage"):WaitForChild("RepStorage"):WaitForChild("Remotes"):WaitForChild("TalkToNPC"):FireServer(seller,"")
 
-else
-    return
+
 end
 end
 
@@ -398,8 +392,6 @@ if getgenv().platform == true then
     Part.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3.02, 0)
     end
 
-else
-    return
 end
 end
 local function areatp()
@@ -451,8 +443,7 @@ if getgenv().autofarm then
     end
 
 
-else
-    return
+
 
 end
 end)
