@@ -466,7 +466,7 @@ end
 
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Lee rpg v1.60 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
+local Window = Library.CreateLib("Lee rpg v1.70 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Farms")
 
