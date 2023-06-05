@@ -1,0 +1,407 @@
+
+getgenv().autofarm = true
+getgenv().noclip = false
+getgenv().autoquest = false
+local mobTable = {
+"Swordmen",
+"Abnormal Demon",
+"Mizunoto (Demon Corp.)",
+"Explosion Art Demon",
+"Female Infected Human",
+"Mutated Demon",
+"Abnormal Mutated Demon",
+"Male Infected Human (Swamp)",
+"Intermediate Insect Demon Corps",
+"Weak Demon",
+"Bandit",
+"Nezuko",
+"Beginner Insect Demon Corps",
+"Water Breathing Student",
+"Male Infected Human (Akaza)",
+"Male Infected Human",
+"Female Infected Human (Explosion)",
+"Susamaru",
+"Rock",
+"Minori",
+"Enmu",
+"Susamaru (Mini Boss)",
+"Tanjiro Kamado",
+"Samurai",
+"Higoshi2",
+"Urodaki",
+"Shinobu Kocho (2%)",
+"Sanemi Shinazugawa (2%)",
+
+
+}
+
+local npcTable = {
+
+
+
+
+
+}
+local areaTable = {
+
+
+
+}
+
+
+local RunService = game:GetService("RunService");
+local Players = game:GetService("Players");
+local Player = Players.LocalPlayer;
+
+local TeleportSpeed = 100
+local NextFrame = RunService.Heartbeat;
+
+local function Tween(Target)
+    if (typeof(Target) == "Instance" and Target:IsA("BasePart")) then Target = Target.Position; end;
+    if (typeof(Target) == "CFrame") then Target = Target.p end;
+
+    local HRP = (Player.Character and Player.Character:FindFirstChild("HumanoidRootPart"));
+    if (not HRP) then return; end;
+
+    local StartingPosition = HRP.Position;
+    local PositionDelta = (Target - StartingPosition);--Calculating the difference between the start and end positions.
+    local StartTime = tick();
+    local TotalDuration = (StartingPosition - Target).magnitude / TeleportSpeed;
+
+    repeat NextFrame:Wait();
+        local Delta = tick() - StartTime;
+        local Progress = math.min(Delta / TotalDuration, 1);--Getting the percentage of completion of the teleport (between 0-1, not 0-100)
+        --We also use math.min in order to maximize it at 1, in case the player gets an FPS drop, so it doesn't go past the target.
+        local MappedPosition = StartingPosition + (PositionDelta * Progress);
+        HRP.Velocity = Vector3.new();--Resetting the effect of gravity so it doesn't get too much and drag the player below the ground.
+        HRP.CFrame = CFrame.new(MappedPosition);
+    until (HRP.Position - Target).magnitude <= TeleportSpeed / 2;
+    HRP.Anchored = false;
+    HRP.CFrame = CFrame.new(Target);
+end;
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Make sure to join my discord server!"; -- the title (ofc)
+    Text = "discord.gg/macscripts"; -- what the text says (ofc)
+    Icon = ""; -- the image if u want. 
+    Duration = 20; -- how long the notification should in secounds
+    })
+
+
+    local PlaceID = game.PlaceId
+    local AllIDs = {}
+    local foundAnything = ""
+    local actualHour = os.date("!*t").hour
+    local Deleted = false
+    
+    local File = pcall(function()
+        AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
+    end)
+    if not File then
+        table.insert(AllIDs, actualHour)
+        writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+    end
+    
+     local function TPReturner()
+        local Site;
+        if foundAnything == "" then
+            Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
+        else
+            Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
+        end
+        local ID = ""
+        if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+            foundAnything = Site.nextPageCursor
+        end
+        local num = 0;
+        for i,v in pairs(Site.data) do
+            local Possible = true
+            ID = tostring(v.id)
+            if tonumber(v.maxPlayers) > tonumber(v.playing) then
+                for _,Existing in pairs(AllIDs) do
+                    if num ~= 0 then
+                        if ID == tostring(Existing) then
+                            Possible = false
+                        end
+                    else
+                        if tonumber(actualHour) ~= tonumber(Existing) then
+                            local delFile = pcall(function()
+                                delfile("NotSameServers.json")
+                                AllIDs = {}
+                                table.insert(AllIDs, actualHour)
+                            end)
+                        end
+                    end
+                    num = num + 1
+                end
+                if Possible == true then
+                    table.insert(AllIDs, ID)
+                    wait()
+                    pcall(function()
+                        writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+                        wait()
+                        game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+                    end)
+                    wait(4)
+                end
+            end
+        end
+    end
+    
+     local function serverhop()
+        while wait() do
+            pcall(function()
+                TPReturner()
+                if foundAnything ~= "" then
+                    TPReturner()
+                end
+            end)
+        end
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for _,v in pairs(game:GetService("Workspace").NPC.Quests:GetChildren()) do 
+        
+    if v:IsA("Model") then
+       
+table.insert(npcTable, v.Name)
+
+
+    end
+ end
+
+ for _,v in pairs(game:GetService("Workspace").AreaPlaces:GetChildren()) do 
+        
+    if v:IsA("Part") then
+       
+table.insert(areaTable, v.Name)
+
+
+
+
+    end
+ end
+
+local function areatp()
+
+    for _,v in pairs(game:GetService("Workspace").AreaPlaces:GetDescendants()) do 
+        
+        if v:IsA("Part") and v.Name == area1 then
+           
+            Tween(v.CFrame)
+    
+
+        end
+     end
+    
+
+
+end
+local function autoquest()
+if getgenv().autoquest == true then
+if game:GetService("Workspace").NPC.Quests:FindFirstChild(quest) then
+
+    fireclickdetector(game:GetService("Workspace").NPC.Quests[quest].ClickDetector)
+    
+end
+end
+end
+
+
+local function autofarm()
+if getgenv().autofarm == true then
+    if game:GetService("Workspace").Live:FindFirstChild(mob) and getgenv().autofarm == true      then
+       
+        if game:GetService("Workspace").Live[mob].Humanoid.Health > 0 and getgenv().autofarm == true then
+
+game:GetService("Players").LocalPlayer.Character:FindFirstChild("Nichirin Sword").Remotes.KatanaLight:FireServer(1,"AttackConfirmation",game:GetService("Players").LocalPlayer.Character.Blade)
+Tween(game:GetService("Workspace").Live[mob].HumanoidRootPart.CFrame * CFrame.new(0,-5,0)* CFrame.Angles(math.rad(90),0,0)) 
+
+        elseif  game:GetService("Workspace").Live[mob].Humanoid.Health <= 0 and getgenv().autofarm == true then
+
+
+            game:GetService("Workspace").Live[mob]:Destroy()
+
+        end
+    end
+end
+end
+
+local function infbreath()
+
+
+    local __namecall
+    __namecall = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
+        local args, method = {...}, getnamecallmethod()
+            
+        if table.find({'System'}, self.Name) and tostring(method):match('FireServer') then
+           
+    
+            return
+      
+        end
+    
+        return __namecall(self, ...)
+    
+    end))
+
+end
+
+
+
+local function noclip()
+    game:GetService("RunService").Stepped:Connect(
+        function()
+            if getgenv().noclip then
+                pcall(
+                    function()
+                        for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                            if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                                v.CanCollide = false
+                            end
+                        end
+                    end
+                )
+            else
+                pcall(
+                    function()
+                        for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                            if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                                v.CanCollide = true
+                            end
+                        end
+                    end
+                )
+            end
+        end
+    )
+end
+
+
+
+--ui
+
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+
+
+local Window = Library.CreateLib("Dsrpg2 BETA by Mac#0014 discord: discord.gg/macscripts ", "DarkTheme")
+local Tab = Window:NewTab("Autofarms")
+local Section = Tab:NewSection("Mob autofarm")
+
+Section:NewToggle(
+    "Autofarm",
+    "Toggles Autofarm",
+    function(state)
+        getgenv().autofarm = state
+       
+        while true do
+            task.wait()
+            if getgenv().autofarm == false then
+                break
+            end
+        
+            autofarm()
+        end
+    end
+)
+
+Section:NewDropdown("Choose a mob to farm", "DropdownInf", mobTable, function(currentOption)
+    mob = currentOption
+
+end)
+
+
+local Section = Tab:NewSection("Autoquest")
+Section:NewToggle(
+    "Autoquest",
+    "Toggles Autoquest",
+    function(state)
+        getgenv().autoquest = state
+       
+        while true do
+            task.wait()
+            if getgenv().autoquest == false then
+                break
+            end
+        
+            autoquest()
+        end
+    end
+)
+
+Section:NewDropdown("Choose a quest npc", "DropdownInf", npcTable, function(currentOption)
+    quest = currentOption
+
+end)
+
+
+local Tab = Window:NewTab("Misc")
+local Section = Tab:NewSection("Misc stuff")
+
+Section:NewButton("Inf breathing(inhale first then click)", "ButtonInfo", function()
+    infbreath()
+end)
+
+Section:NewToggle(
+    "Noclip",
+    "Toggles Autofarm",
+    function(state)
+        getgenv().noclip = state
+       
+        
+        
+            noclip()
+        end
+   
+)
+
+local Tab = Window:NewTab("Teleports")
+local Section = Tab:NewSection("Area tps")
+
+
+Section:NewDropdown("Tp to area", "DropdownInf", areaTable, function(currentOption)
+    area1 = currentOption
+areatp()
+end)
+
+
+local Tab = Window:NewTab("Settings")
+local Section = Tab:NewSection("Settings")
+
+
+
+
+
+Section:NewButton("Server hop", "ButtonInfo", function()
+    serverhop()
+end)
+
+
+
+Section:NewButton("Copy discord invite", "ButtonInfo", function()
+    setclipboard("discord.gg/macscripts")
+end)
+
+
+
+Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
+	Library:ToggleUI()
+end)
+
+
+
