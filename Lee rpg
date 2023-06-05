@@ -150,7 +150,7 @@ end
 end
 game.StarterGui:SetCore("SendNotification", {
     Title = "Make sure to join my discord server!"; 
-    Text = "https://discord.gg/7Zd6xWc9M4"; 
+    Text = "discord.gg/macscripts"; 
     Icon = ""; 
     Duration = 20; 
     })
@@ -418,11 +418,12 @@ if getgenv().autofarm then
        
         if game:GetService("Workspace").Main.Players[mob].Humanoid.Health > 0 then
 
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,position)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,position) 
     game:GetService("Players").LocalPlayer.Character.ClientStateReplication.M1:FireServer(true)
+
         elseif game:GetService("Workspace").Main.Players[mob].Humanoid.Health == 0  then
 
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,2)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Main.Players[mob].HumanoidRootPart.CFrame * CFrame.new(0,0,2) 
 
             fireproximityprompt(game:GetService("Workspace").Main.Players[mob].Torso.ProximityPrompt, 1, true)
 
@@ -430,11 +431,8 @@ if getgenv().autofarm then
         end
 
         
-    else
-        
-
-
-
+    
+    
     end
 
 
@@ -466,7 +464,7 @@ end
 
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Lee rpg v1.70 by Mac#0014 discord server: 7Zd6xWc9M4", "DarkTheme")
+local Window = Library.CreateLib("Lee rpg v1.70 by Mac#0014 discord server:discord.gg/macscripts", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Farms")
 
@@ -704,4 +702,4 @@ end)
 Section:NewKeybind("Ui toggle", "KeybindInfo", Enum.KeyCode.X, function()
 	Library:ToggleUI()
 end)
-local Section = Tab:NewSection("Discord server:https://discord.gg/7Zd6xWc9M4")
+local Section = Tab:NewSection("Discord server:discord.gg/macscripts")
