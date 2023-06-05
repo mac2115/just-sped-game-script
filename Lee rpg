@@ -79,12 +79,7 @@ local sellerTable = {
 
 }
 
-local chestTable = {
-"Basic Chest",
-"Iron Chest"
 
-
-}
 local fruitTable = {
     "Strawberry Plant",  "Watermelon Plant", "Pineapple Plant", "Gravity Rock", "Gravity Fruit", "Gravity Essence", "Birch", "BlueBows", "Deep Forest Twine", "Forest Shell", "MageBerry Bush", "Melon Plant", "Riza Fruit Tree", "Apple", "Orange", "Pear", "Sand Stone", "Abyssal Shell", "Abyss Coral", "Artic Shell", "Beach Shell", "Green", "Green Bush 2", "Green Bush 3", "Large Green"
 
@@ -455,10 +450,10 @@ end
 local function chestfarm()
     spawn(function()
         if getgenv().chestfarm then
-            if game:GetService("Workspace"):FindFirstChild(chest) and game:GetService("Workspace")[chest]:FindFirstChildOfClass("Part") then
+            if game:GetService("Workspace"):FindFirstChild('') and game:GetService("Workspace")['']:FindFirstChildOfClass("Part") and game:GetService("Workspace")['']:IsA("Model")  then
 
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace")[chest].Part.CFrame *CFrame.new(0,0,0)
-                fireproximityprompt(game:GetService("Workspace")[chest].Open, 1, true)
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace")[''].Part.CFrame *CFrame.new(0,0,0)
+                fireproximityprompt(game:GetService("Workspace")[''].Open, 1, true)
 
 
             end
@@ -527,7 +522,7 @@ Section:NewToggle("Sell corps toggle", "ToggleInfo", function(state)
     getgenv().sellcorps = state
        
     while true do
-        task.wait(2)
+        task.wait(0.9)
         if getgenv().sellcorps == false then
             break
         end
@@ -557,9 +552,7 @@ Section:NewToggle("Chest farm toggle ", "ToggleInfo", function(state)
 end)
 
 
-Section:NewDropdown("Choose chest", "DropdownInf", chestTable, function(currentOption)
-    chest = currentOption
-end)
+
 
 local Section = Tab:NewSection("Fruit autofarm")
 
