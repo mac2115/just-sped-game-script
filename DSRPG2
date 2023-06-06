@@ -2,6 +2,8 @@
 getgenv().autofarm = true
 getgenv().noclip = false
 getgenv().autoquest = false
+
+
 local mobTable = {
 "Swordmen",
 "Abnormal Demon",
@@ -47,7 +49,12 @@ local areaTable = {
 
 
 }
+local shopTable = {
 
+
+
+    
+}
 
 local RunService = game:GetService("RunService");
 local Players = game:GetService("Players");
@@ -160,17 +167,7 @@ game.StarterGui:SetCore("SendNotification", {
     end
 
 
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
 
@@ -190,7 +187,15 @@ table.insert(npcTable, v.Name)
        
 table.insert(areaTable, v.Name)
 
+for _,v in pairs(game:GetService("Workspace").NPC["Demons cannot buy this!"]:GetChildren()) do 
+        
+    if v:IsA("Model") and v:FindFirstChild("ClickDetector") then
+       
+table.insert(shopTable, v.Name)
 
+
+    end
+ end
 
 
     end
@@ -220,6 +225,11 @@ if game:GetService("Workspace").NPC.Quests:FindFirstChild(quest) then
 end
 end
 end
+local function buy()
+    fireclickdetector(game:GetService("Workspace").NPC["Demons cannot buy this!"][seller1].ClickDetector)
+
+end
+
 
 
 local function autofarm()
@@ -299,7 +309,7 @@ end
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 
 
-local Window = Library.CreateLib("Dsrpg2 BETA by Mac#0014 discord: discord.gg/macscripts ", "DarkTheme")
+local Window = Library.CreateLib("Dsrpg2 v1.0 by Mac#0014 discord: discord.gg/macscripts ", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Mob autofarm")
 
@@ -369,6 +379,13 @@ Section:NewToggle(
         end
    
 )
+local Section = Tab:NewSection("Shop for slayers")
+
+Section:NewDropdown("Choose an item to buy", "DropdownInf", shopTable, function(currentOption)
+    seller1 = currentOption
+buy()
+end)
+
 
 local Tab = Window:NewTab("Teleports")
 local Section = Tab:NewSection("Area tps")
@@ -378,6 +395,8 @@ Section:NewDropdown("Tp to area", "DropdownInf", areaTable, function(currentOpti
     area1 = currentOption
 areatp()
 end)
+
+
 
 
 local Tab = Window:NewTab("Settings")
