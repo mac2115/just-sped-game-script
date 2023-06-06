@@ -200,7 +200,7 @@ table.insert(npcTable, v.Name)
     if v:IsA("Part") then
        
 table.insert(areaTable, v.Name)
-local function yes()
+
 for _,v in pairs(game:GetService("Workspace").NPC["Demons cannot buy this!"]:GetChildren()) do 
         
     if v:IsA("Model") and v:FindFirstChild("ClickDetector") then
@@ -214,10 +214,10 @@ table.insert(shopTable, v.Name)
 
     end
  end
-end
+
 
 local function areatp()
-z
+
     for _,v in pairs(game:GetService("Workspace").AreaPlaces:GetDescendants()) do 
         
         if v:IsA("Part") and v.Name == area1 then
