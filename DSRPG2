@@ -55,6 +55,12 @@ local shopTable = {
 
     
 }
+local teacherTable = {
+
+
+
+
+}
 
 local RunService = game:GetService("RunService");
 local Players = game:GetService("Players");
@@ -169,7 +175,15 @@ game.StarterGui:SetCore("SendNotification", {
 
     
 
-
+    for _,v in pairs(game:GetService("Workspace").NPC.Teacher:GetChildren()) do 
+        
+        if v:IsA("Model") and v:FindFirstChild("ClickDetector") then
+           
+    table.insert(teacherTable, v.Name)
+    
+    
+        end
+     end
 
 for _,v in pairs(game:GetService("Workspace").NPC.Quests:GetChildren()) do 
         
@@ -230,6 +244,10 @@ local function buy()
 
 end
 
+local function teaching()
+    fireclickdetector(game:GetService("Workspace").NPC.Teacher[teacher].ClickDetector)
+
+end
 
 
 local function autofarm()
@@ -384,6 +402,12 @@ local Section = Tab:NewSection("Shop for slayers")
 Section:NewDropdown("Choose an item to buy", "DropdownInf", shopTable, function(currentOption)
     seller1 = currentOption
 buy()
+end)
+
+local Section = Tab:NewSection("Talk to teaching npcs")
+Section:NewDropdown("Choose an npc to talk to", "DropdownInf", teacherTable, function(currentOption)
+    teacher = currentOption
+teaching()
 end)
 
 
