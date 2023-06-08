@@ -2,7 +2,7 @@
 getgenv().autofarm = true
 getgenv().noclip = false
 getgenv().autoquest = false
-
+getgenv().autoequip = false
 
 local mobTable = {
 "Swordmen",
@@ -49,13 +49,19 @@ local areaTable = {
 
 
 }
-local shopTable = {
+local targetTable = {
 
 
 
     
 }
 local teacherTable = {
+
+
+
+
+}
+local weaponTable = {
 
 
 
@@ -172,6 +178,15 @@ game.StarterGui:SetCore("SendNotification", {
         end
     end
 
+    for _,v in pairs(game:GetService("Workspace").NPC.Targets:GetChildren()) do 
+        
+        if  v:FindFirstChild("ClickDetector") then
+           
+    table.insert(targetTable, v.Name)
+    
+    
+        end
+     end
 
     
 
@@ -184,6 +199,8 @@ game.StarterGui:SetCore("SendNotification", {
     
         end
      end
+
+
 
 for _,v in pairs(game:GetService("Workspace").NPC.Quests:GetChildren()) do 
         
@@ -223,6 +240,18 @@ local function areatp()
 
 
 end
+
+for _,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do 
+        
+    if v:IsA("Tool")  then
+       
+table.insert(weaponTable, v.Name)
+
+
+    end
+ end
+
+
 local function autoquest()
 if getgenv().autoquest == true then
 if game:GetService("Workspace").NPC.Quests:FindFirstChild(quest) then
@@ -234,6 +263,31 @@ end
 end
 
 
+local function autoequip()
+    spawn(function()
+        if getgenv().autoequip == true then
+        while getgenv().autoequip do task.wait()
+            for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                if v.name == weapon2 then
+                    v.Parent = game.Players.LocalPlayer.Character
+                end
+            end
+        end
+    
+    end
+    end)
+    end
+
+
+
+
+
+local function targets()
+
+
+    fireclickdetector(game:GetService("Workspace").NPC.Targets[target2].ClickDetector)
+
+end
 
 local function teaching()
     fireclickdetector(game:GetService("Workspace").NPC.Teacher[teacher].ClickDetector)
@@ -246,9 +300,11 @@ if getgenv().autofarm == true then
     if game:GetService("Workspace").Live:FindFirstChild(mob) and getgenv().autofarm == true      then
        
         if game:GetService("Workspace").Live[mob].Humanoid.Health > 0 and getgenv().autofarm == true then
+            
 
-game:GetService("Players").LocalPlayer.Character:FindFirstChild("Nichirin Sword").Remotes.KatanaLight:FireServer(1,"AttackConfirmation",game:GetService("Players").LocalPlayer.Character.Blade)
+            game:GetService("Players").LocalPlayer.Character[weapon2].Remotes.KatanaLight:FireServer(1,"AttackConfirmation", game:GetService("Players").LocalPlayer.Character[weapon2].Blade)
 Tween(game:GetService("Workspace").Live[mob].HumanoidRootPart.CFrame * CFrame.new(0,-5,0)* CFrame.Angles(math.rad(90),0,0)) 
+
 
         elseif  game:GetService("Workspace").Live[mob].Humanoid.Health <= 0 and getgenv().autofarm == true then
 
@@ -318,7 +374,7 @@ end
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 
 
-local Window = Library.CreateLib("Dsrpg2 v1.0 by Mac#0014 discord: discord.gg/macscripts ", "DarkTheme")
+local Window = Library.CreateLib("Dsrpg2 v1.1 by Mac#0014 discord: discord.gg/macscripts ", "DarkTheme")
 local Tab = Window:NewTab("Autofarms")
 local Section = Tab:NewSection("Mob autofarm")
 
@@ -339,8 +395,26 @@ Section:NewToggle(
     end
 )
 
+
+
+
 Section:NewDropdown("Choose a mob to farm", "DropdownInf", mobTable, function(currentOption)
     mob = currentOption
+
+end)
+
+Section:NewToggle(
+    "Autoequip weapon",
+    "Toggles Autoequip",
+    function(state)
+        getgenv().autoequip = state
+       autoequip()
+   
+    end
+)
+
+Section:NewDropdown("Choose your weapon", "DropdownInf", weaponTable, function(currentOption)
+    weapon2 = currentOption
 
 end)
 
@@ -393,6 +467,18 @@ Section:NewDropdown("Choose an npc to talk to", "DropdownInf", teacherTable, fun
     teacher = currentOption
 teaching()
 end)
+
+local Section = Tab:NewSection("Quest items ")
+Section:NewDropdown("Choose an item to get", "DropdownInf",targetTable, function(currentOption)
+    target2 = currentOption
+targets()
+end)
+
+
+
+
+
+
 
 
 local Tab = Window:NewTab("Teleports")
