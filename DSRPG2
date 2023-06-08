@@ -201,15 +201,7 @@ table.insert(npcTable, v.Name)
        
 table.insert(areaTable, v.Name)
 
-for _,v in pairs(game:GetService("Workspace").NPC["Demons cannot buy this!"]:GetChildren()) do 
-        
-    if v:IsA("Model") and v:FindFirstChild("ClickDetector") then
-       
-table.insert(shopTable, v.Name)
 
-
-    end
- end
 
 
     end
@@ -240,10 +232,8 @@ if game:GetService("Workspace").NPC.Quests:FindFirstChild(quest) then
 end
 end
 end
-local function buy()
-    fireclickdetector(game:GetService("Workspace").NPC["Demons cannot buy this!"][seller1].ClickDetector)
 
-end
+
 
 local function teaching()
     fireclickdetector(game:GetService("Workspace").NPC.Teacher[teacher].ClickDetector)
@@ -398,13 +388,6 @@ Section:NewToggle(
         end
    
 )
-local Section = Tab:NewSection("Shop for slayers")
-
-Section:NewDropdown("Choose an item to buy", "DropdownInf", shopTable, function(currentOption)
-    seller1 = currentOption
-buy()
-end)
-
 local Section = Tab:NewSection("Talk to teaching npcs")
 Section:NewDropdown("Choose an npc to talk to", "DropdownInf", teacherTable, function(currentOption)
     teacher = currentOption
