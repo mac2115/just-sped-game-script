@@ -1,0 +1,21 @@
+
+local games = {
+    ["4734949248"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/DSRPG2',
+    ["12521539843"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/Lee%20rpg',
+    ["8874112980"] = 'https://raw.githubusercontent.com/mac2115/midnight-sun/main/midnight%20sun%20script',
+    -- blue heater moment
+    ["12581593086"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
+    ["12602209860"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
+    ["12602213040"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
+    ["12602215983"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater'
+}
+if (games[tostring(game.PlaceId)] ~= nil) then
+    loadstring(game:HttpGet(games[tostring(game.PlaceId)]))()
+else    
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Game is not supported"; 
+        Text = "Game is not supported "; 
+        Icon = ""; 
+        Duration = 20; 
+        })
+end
