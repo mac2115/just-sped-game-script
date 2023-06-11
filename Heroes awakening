@@ -1,0 +1,290 @@
+getgenv().autofarm = true 
+local npcTable = {}
+local areaTable = {}
+local mobTable = {
+
+"AHero",
+
+"AVil",
+
+"All Might",
+"All for One",
+
+"Bandit",
+
+
+"BHero",
+   
+    "BVil",
+  
+   "CHero",
+
+"CVil",
+
+"Criminal",
+"Civilian",
+"Deku",
+"Dabi",
+"Eraser",
+"HighCivilian",
+"LBandit",
+"Police",
+"Nomu",
+"Present Mic",
+"Mirio",
+"MiniNomu"
+,"Lumberjack",
+"Prison Guard",
+"Prisoner",
+"Prison Boss",
+"SHero",
+"SVil",
+"Stain",
+"Todoroki",
+"Uraraka",
+"UATrainee",
+"Toru Hagakure",
+"Tomura",
+
+
+
+
+
+
+}
+local activeCodes = {
+
+ }
+
+for i,v in pairs(workspace.NPCs:GetChildren()) do 
+
+    if v:IsA("Model") then 
+
+table.insert(npcTable, v.Name)
+
+
+    end
+end
+
+
+
+for i,v in pairs(workspace.Map.AreasOfImportance:GetChildren()) do 
+
+    if v:IsA("Model") then 
+
+table.insert(areaTable, v.Name)
+
+
+    end
+end
+
+
+for i,v in pairs(game:GetService("ReplicatedStorage").Codes:GetChildren()) do 
+
+    if v:IsA("Folder") then 
+
+table.insert(activeCodes, v.Name)
+
+
+    end
+end
+
+
+
+local function redeem()
+
+     local amount = 1500
+     
+     for _, code in ipairs(activeCodes) do
+         for i = 1, amount do
+             task.spawn(function()
+          
+     game:GetService("ReplicatedStorage"):WaitForChild("codes"):FireServer(code)
+     
+             end)
+         end
+     end
+     
+
+
+end
+
+
+local function autofarm()
+
+
+
+    for i  ,v in pairs(workspace.Characters:GetChildren()) do 
+
+        if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart")   then 
+
+         
+            
+            game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, "Basic Combat")
+            
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,position,0) * CFrame.Angles(math.rad(-90), 0, 0) 
+
+           
+            
+
+        end
+    end
+
+
+
+
+end
+
+
+local function npctp()
+
+
+
+    game.Players.LocalPlayer.Character:PivotTo(workspace.NPCs[npc]:GetPivot())
+
+
+end
+local function areatp()
+
+
+    game.Players.LocalPlayer.Character:PivotTo(workspace.Map.AreasOfImportance[area]:GetPivot())
+
+end
+
+
+
+--ui
+
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
+
+
+local GUI = Mercury:Create{
+    Name = "Heroes Awakening",
+    Size = UDim2.fromOffset(600, 400),
+    Theme = Mercury.Themes.Dark,
+    Link = "discord.gg/macscripts"
+}
+
+GUI:Credit{
+	Name = "Mac#0014",
+	Description = "Scripter",
+	V3rm = "https://v3rmillion.net/member.php?action=profile&uid=1076851",
+	Discord = "Mac#0014"
+}
+
+
+
+GUI:Notification{
+	Title = "Join our discord!",
+	Text = "discord.gg/macscripts",
+	Duration = 20,
+	Callback = function() end
+}
+
+
+
+local Tab = GUI:Tab{
+	Name = "Autofarms",
+	Icon = "rbxassetid://8569322835"
+}
+
+
+
+
+Tab:Toggle{
+	Name = "Mob Autofarm toggle ",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state) 
+getgenv().autofarm = state
+if getgenv().autofarm then 
+ 
+    farming = game:GetService("RunService").Heartbeat:connect(
+        function()
+            autofarm()
+        end
+    )
+    return
+    end
+    
+    farming:Disconnect()
+    
+    end
+}
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a mob ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = mobTable,
+
+	Callback = function(item) 
+        mob = item
+        return end
+}
+
+
+Tab:Slider{
+	Name = "Position",
+	Default = 5,
+	Min = -10,
+	Max = 10,
+	Callback = function(Value)
+ 
+position = Value
+
+
+    end
+}
+
+
+
+
+local Tab = GUI:Tab{
+	Name = "Teleports",
+	Icon = "rbxassetid://8569322835"
+}
+
+
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose an npc to tp to ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = npcTable,
+
+	Callback = function(item) 
+        npc = item
+        npctp()
+        return end
+}
+
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose an area to tp to ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = areaTable,
+
+	Callback = function(item) 
+    area = item
+        areatp()
+        return end
+}
+
+local Tab = GUI:Tab{
+	Name = "Misc",
+	Icon = "rbxassetid://8569322835"
+}
+
+
+
+Tab:Button{
+	Name = "Redeem all working codes",
+	Description = nil,
+	Callback = function() 
+    
+    redeem()
+
+    end
+}
