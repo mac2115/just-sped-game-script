@@ -7,7 +7,9 @@ local games = {
     ["12581593086"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
     ["12602209860"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
     ["12602213040"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
-    ["12602215983"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater'
+    ["12602215983"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
+    --
+    ["13085698987"] = "https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/Heroes%20awakening"
 }
 if (games[tostring(game.PlaceId)] ~= nil) then
     loadstring(game:HttpGet(games[tostring(game.PlaceId)]))()
