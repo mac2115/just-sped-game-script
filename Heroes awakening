@@ -172,7 +172,7 @@ end
 local function killaura()
     
 
-    game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, "Basic Combat")
+    game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, weapon2)
   
 end
 
@@ -412,6 +412,16 @@ if getgenv().killaura then
     end
 }
 
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a weapon to farm with  ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = weaponTable,
+
+	Callback = function(item) 
+        weapon2 = item
+        return end
+}
 
 Tab:Button{
 	Name = "Redeem all working codes",
