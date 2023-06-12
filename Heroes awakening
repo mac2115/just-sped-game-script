@@ -63,6 +63,20 @@ local activeCodes = {
 
 
  }
+local weaponTable = {
+"Karate",
+"Basic Combat",
+"Scythe",
+"Steel Katana",
+"Lightning Bolt",
+
+
+
+
+
+}
+
+
 
 for i,v in pairs(workspace.NPCs:GetChildren()) do 
 
@@ -141,7 +155,7 @@ local function autofarm()
         if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0   then 
 
          
-            game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, "Basic Combat")
+            game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, weapons)
             
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,position,0) * CFrame.Angles(math.rad(-90), 0, 0) 
             
@@ -259,6 +273,7 @@ if getgenv().autofarm then
     end
 }
 
+
 local MyDropdown = Tab:Dropdown{
 	Name = "Choose a mob ",
 	StartingText = "Select...",
@@ -267,6 +282,17 @@ local MyDropdown = Tab:Dropdown{
 
 	Callback = function(item) 
         mob = item
+        return end
+}
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a weapon to farm with  ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = weaponTable,
+
+	Callback = function(item) 
+        weapons = item
         return end
 }
 
