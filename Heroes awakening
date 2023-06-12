@@ -69,8 +69,20 @@ local weaponTable = {
 "Scythe",
 "Steel Katana",
 "Lightning Bolt",
-
-
+"Cement",
+"Zero Gravity",
+"Decay",
+"Erasure",
+"HCHH",
+"OFA",
+"Explosion",
+"Ice","Air Propulsion",
+"Invisibility",
+"Gigantification",
+"Hardening",
+"Naval Laser",
+"Super Strength",
+"Heal",
 
 
 
@@ -154,11 +166,26 @@ local function autofarm()
 
         if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0   then 
 
-         
+         if not game:GetService("Players").LocalPlayer.Quest.Complete.Value == true then
+            
+            
             game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, weapons)
-            
+    
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,position,0) * CFrame.Angles(math.rad(-90), 0, 0) 
-            
+         
+        
+        elseif game:GetService("Players").LocalPlayer.Quest.Complete.Value == true then
+        
+            game.Players.LocalPlayer.Character:PivotTo(workspace.QuestGivers[quest]:GetPivot())
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.HoldDuration = 0
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.Exclusivity = "AlwaysShow"
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.RequiresLineOfSight = false 
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.MaxActivationDistance = 10
+            fireproximityprompt(workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt, 1)
+
+        end
+
+
 break
         end
     end
