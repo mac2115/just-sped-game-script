@@ -164,7 +164,7 @@ local function autofarm()
 
     for i  ,v in pairs(workspace.Characters:GetChildren()) do 
 
-        if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0   then 
+        if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and getgenv().autofarm == true  then 
 
          if not game:GetService("Players").LocalPlayer.Quest.Complete.Value == true then
             
