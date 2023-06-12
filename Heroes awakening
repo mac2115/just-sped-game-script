@@ -138,17 +138,14 @@ local function autofarm()
 
     for i  ,v in pairs(workspace.Characters:GetChildren()) do 
 
-        if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart")   then 
+        if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0   then 
 
          
-            
             game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, "Basic Combat")
             
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,position,0) * CFrame.Angles(math.rad(-90), 0, 0) 
-
-           
             
-
+break
         end
     end
 
