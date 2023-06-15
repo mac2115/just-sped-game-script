@@ -9,7 +9,9 @@ local games = {
     ["12602213040"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
     ["12602215983"] = 'https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/BlueHeater',
     --
-    ["13085698987"] = "https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/Heroes%20awakening"
+    ["13085698987"] = "https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/Heroes%20awakening",
+    --
+    ["11481193418"] = "https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/One%20shot"
 }
 if (games[tostring(game.PlaceId)] ~= nil) then
     loadstring(game:HttpGet(games[tostring(game.PlaceId)]))()
@@ -21,3 +23,11 @@ else
         Duration = 20; 
         })
 end
+
+
+
+
+
+
+
+
