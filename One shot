@@ -1,4 +1,3 @@
-
 getgenv().mobfarm = false
 getgenv().infstamina = false
 getgenv().noclip = false
@@ -127,7 +126,15 @@ Tab:Toggle{
          infstamina()
     end
 }
-
+Tab:Toggle{
+	Name = "Noclip toggle",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state) 
+        getgenv().noclip = state
+         noclip()
+    end
+}
 local Tab = GUI:Tab{
 	Name = "Teleports",
 	Icon = "rbxassetid://8569322835"
@@ -143,21 +150,25 @@ local MyDropdown = Tab:Dropdown{
         npctp()
         return end
 }
---//Loops
-game:GetService("RunService").Heartbeat:connect(function()
-Mobfarm()
-infstamina()
-noclip()
-end)
 GUI:Notification{
 	Title = "Make sure to join our discord for updates",
 	Text = "Join : discord.gg/macscripts",
 	Duration = 3,
 	Callback = function() end
 }
+
 GUI:Credit{
 	Name = "Mac#0014",
 	Description = "Made the script",
 	V3rm = "https://v3rmillion.net/member.php?action=profile&uid=1076851",
 	Discord = "Mac#0014"
 }
+
+
+--//Loops
+game:GetService("RunService").Heartbeat:connect(function()
+Mobfarm()
+infstamina()
+noclip()
+end)
+
