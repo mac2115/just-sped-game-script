@@ -1,1 +1,163 @@
 
+getgenv().mobfarm = false
+getgenv().infstamina = false
+getgenv().noclip = false
+local char = game.Players.LocalPlayer.Character
+local Attackremote = game:GetService("Players").LocalPlayer.Backpack.Client.re
+local mobTable = {"Bandit","Bald Tanktop","Jeff The Stealer","Demon Cyborg","Ocean Lord","Police Officer","Strong Bandit","Vaccine Man","Weak Hero","Weak Monster","Bike Rider"}
+local npcTable = {}
+--//Variables
+
+
+--//Functions
+
+for i, v in pairs(workspace.Game.Map.InteractableNPCS:GetChildren()) do
+    if  v:IsA("Model") then
+       table.insert(npcTable,v.Name)
+    end
+end
+
+local function Mobfarm()
+    if getgenv().mobfarm == true then
+    for i, v in pairs(workspace.Game.Characters:GetChildren()) do
+        if v.Name == mob and v:FindFirstChild("HumanoidRootPart")  then
+            if v.Humanoid.Health == v.Humanoid.MaxHealth then
+            char:PivotTo(v:GetPivot()*CFrame.new(0,0,position))
+            Attackremote:FireServer("Punch")
+            elseif v.Humanoid.Health ~= v.Humanoid.MaxHealth then 
+                v.Humanoid.Health = 0
+            end
+          
+        end
+    end
+end
+end
+
+local function infstamina()
+    if getgenv().infstamina == true then
+    char.INFO.Stamina.Value = math.huge 
+    end
+end
+
+local function npctp()
+    for i, v in pairs(workspace.Game.Characters:GetChildren()) do
+        if v.Name == npc and v:FindFirstChild("HumanoidRootPart") then
+            char:PivotTo(v:GetPivot())
+        end
+    end
+end
+
+local function noclip()
+    if getgenv().noclip then
+        pcall(
+            function()
+                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                        v.CanCollide = false
+                    end
+                end
+            end
+        )
+    else
+        pcall(
+            function()
+                for i, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v.ClassName == "Part" or v.ClassName == "MeshPart" then
+                        v.CanCollide = true
+                    end
+                end
+            end
+        )
+    end
+end
+
+
+--//UI
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
+
+local GUI = Mercury:Create{
+    Name = "Oneshot",
+    Size = UDim2.fromOffset(600, 400),
+    Theme = Mercury.Themes.Dark,
+    Link = "https://github.com/deeeity/mercury-lib"
+}
+
+local Tab = GUI:Tab{
+	Name = "Main",
+	Icon = "rbxassetid://8569322835"
+}
+Tab:Toggle{
+	Name = "Mob Farm toggle",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state) 
+        getgenv().mobfarm = state
+         Mobfarm()
+    end
+}
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a mob ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = mobTable,
+
+	Callback = function(item) 
+        mob = item
+        return end
+}
+Tab:Slider{
+	Name = "Farm Position",
+	Default = 7,
+	Min = -10,
+	Max = 10,
+	Callback = function(value) 
+    position = value
+    end
+}
+local Tab = GUI:Tab{
+	Name = "Misc",
+	Icon = "rbxassetid://8569322835"
+}
+Tab:Toggle{
+	Name = "Infstamina toggle",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state) 
+        getgenv().infstamina = state
+         infstamina()
+    end
+}
+
+local Tab = GUI:Tab{
+	Name = "Teleports",
+	Icon = "rbxassetid://8569322835"
+}
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a npc to tp to ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = npcTable,
+
+	Callback = function(item) 
+        npc = item
+        npctp()
+        return end
+}
+--//Loops
+game:GetService("RunService").Heartbeat:connect(function()
+Mobfarm()
+infstamina()
+noclip()
+end)
+GUI:Notification{
+	Title = "Make sure to join our discord for updates",
+	Text = "Join : discord.gg/macscripts",
+	Duration = 3,
+	Callback = function() end
+}
+GUI:Credit{
+	Name = "Mac#0014",
+	Description = "Made the script",
+	V3rm = "https://v3rmillion.net/member.php?action=profile&uid=1076851",
+	Discord = "Mac#0014"
+}
