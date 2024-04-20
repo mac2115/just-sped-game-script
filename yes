@@ -99,6 +99,7 @@ function Tween(Target, mob)
 	end
 end
 
+local TeleportService = game:GetService("TeleportService")
 local Kisuke
 _G.queued = false
 function autoraid()
@@ -141,10 +142,18 @@ function autoraid()
 		elseif game.PlaceId == 17047374266 then
 			for i, v in next, Workspace.Entities:GetChildren() do
 				if v.Name ~= plr.Name and v:FindFirstChild("Head") then
-					plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 13, 0)
+					plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+						* CFrame.new(0, 10, 0)
+						* CFrame.Angles(math.rad(-90), 0, 0)
+					if plr.Character:FindFirstChild("Zanpakuto") then
+						plr.Character.CharacterHandler.Remotes.Weapon:FireServer()
+					end
+					combat:FireServer("LightAttack")
+
 					v.Head:Destroy()
 					task.wait()
 					v.Humanoid.Health = 0
+
 				end
 			end
 			for i = 0, 1 do
@@ -169,6 +178,25 @@ function autoraid()
 					_G.queued = true
 				end
 			end
+		else
+			queue_on_teleport([[
+						local clonef = clonefunction
+						local loading= clonef(loadstring)
+						loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteriadebug/main/Asteriaunreleased"))()
+						]])
+			queue_on_teleport([[
+						repeat task.wait() until getgenv().loaded == true
+						getgenv().Settings = {
+						Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
+						TweenSpeed = 150,
+						Fly = { Toggle = false, Speed = 100 },
+						Speed = { Toggle = false, Speed = 100 },
+						InfJump = false,
+						JumpHeight = 50,
+						Autoraid = { Toggle = true },
+						Noclip = false,
+					}]])
+			TeleportService:Teleport(14069678431)
 		end
 	end
 end
