@@ -145,10 +145,7 @@ function autoraid()
 					plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
 						* CFrame.new(0, 10, 0)
 						* CFrame.Angles(math.rad(-90), 0, 0)
-					if plr.Character:FindFirstChild("Zanpakuto") then
-						plr.Character.CharacterHandler.Remotes.Weapon:FireServer()
-					end
-					combat:FireServer("LightAttack")
+					
 
 					v.Head:Destroy()
 					task.wait()
