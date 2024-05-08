@@ -188,7 +188,7 @@ function boss_place()
 			queue_on_teleport([[
 				local clonef = clonefunction
 				local loading= clonef(loadstring)
-				loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteria.lol2/main/Loader"))()
+				loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/just-sped-game-script/main/yes"))()
 			]])
 			queue_on_teleport([[
 				repeat task.wait() until getgenv().loaded == true
