@@ -1,6 +1,9 @@
 repeat
 	task.wait()
 until game:IsLoaded()
+
+--THATS PROBABLY THE WORST CODE U WILL EVER SEE LOLLL DONT LOOK LMFAOOO
+
 getgenv().loaded = false
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -10,36 +13,25 @@ local plr = Players.LocalPlayer
 local clonef = clonefunction
 local combat = ReplicatedStorage.Remotes.ServerCombatHandler
 local NextFrame = RunService.Heartbeat
-local ForceStop = false
-local loading = clonef(loadstring)
-local mobs = { "Fishbone", "Frisker", "LostSoul", "Jackal" }
+local loading = clonef(loadstring) --
+local mobs = { "Fishbone", "Frisker", "LostSoul", "Jackal", "BankaiNPC" }
 
 getgenv().Settings = {
 	Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
-	TweenSpeed = 150,
+	TweenSpeed = 75,
 	Fly = { Toggle = false, Speed = 100 },
 	Speed = { Toggle = false, Speed = 100 },
 	InfJump = false,
 	JumpHeight = 50,
 	Autoraid = { Toggle = false },
 	Noclip = false,
+	Autoquest = false,
 }
 
-function check(dupson)
-	if
-		dupson.Parent.Humanoid.Health <= 0
-		or ForceStop == true
-		or not _G.Played
-		or getgenv().Settings.Autofarm.Toggle
-	then
-		return false
-	else
-		return true
-	end
-end
-
-_G.Played = false
 --//Functions
+if ForceStop then
+	return
+end
 
 function angles(position)
 	if position >= 0 then
@@ -49,179 +41,220 @@ function angles(position)
 	end
 end
 
-local TotalDuration, StartTime, PositionDelta, StartingPosition, HRP, Delta, Progress, MappedPosition
+_G.tweening = false
 
 function Tween(Target, mob)
+	local TotalDuration, StartTime, PositionDelta, StartingPosition, HRP, Delta, Progress, MappedPosition
 	HRP = (plr.Character and plr.Character:FindFirstChild("HumanoidRootPart"))
-	if not HRP then
+	if not HRP or not mob then
 		return
 	end
 	StartingPosition = HRP.Position
 	PositionDelta = (Target.p - StartingPosition)
 	StartTime = tick()
 	TotalDuration = (StartingPosition - Target.p).magnitude / getgenv().Settings.TweenSpeed
-	if mob then
-		if mob:FindFirstChildWhichIsA("Humanoid") then
-			if not _G.Played then
-				repeat
+	if getgenv().Settings.Autofarm.Toggle or getgenv().Settings.Autoquest and not _G.tweening then
+		repeat
+			task.wait()
+			HRP.Velocity = Vector3.new()
+			angle = angles(getgenv().Settings.Autofarm.Position)
+			Delta = tick() - StartTime
+			Progress = math.min(Delta / TotalDuration, 1)
+			MappedPosition = StartingPosition + (PositionDelta * Progress)
+			if (HRP.Position - Target.p).magnitude > 25 then
+				HRP.CFrame = CFrame.new(MappedPosition)
+				_G.tweening = true
+			else
+				if not mob:FindFirstChildWhichIsA("Humanoid") then
+					HRP.Velocity = Vector3.new()
+					HRP.CFrame = CFrame.new(Target.p)
+					fireclickdetector(mob.Board.Union.ClickDetector)
 					task.wait()
-					angle = angles(getgenv().Settings.Autofarm.Position)
-					if not ForceStop and getgenv().Settings.Autofarm.Toggle then
-						Delta = tick() - StartTime
-						Progress = math.min(Delta / TotalDuration, 1)
-						MappedPosition = StartingPosition + (PositionDelta * Progress)
-						if (HRP.Position - Target.p).magnitude > 25 then
-							HRP.Velocity = Vector3.new()
-							HRP.CFrame = CFrame.new(MappedPosition)
-								* CFrame.new(0, getgenv().Settings.Autofarm.Position, 0)
-								* CFrame.Angles(math.rad(angle), 0, 0)
-							_G.Played = true
-						else
-							HRP.Velocity = Vector3.new()
-							HRP.CFrame = CFrame.new(Target.p)
-								* CFrame.new(0, getgenv().Settings.Autofarm.Position, 0)
-								* CFrame.Angles(math.rad(angle), 0, 0)
-						end
+					if plr:FindFirstChild("MissionBoard") then
+						plr.MissionBoard:FireServer("Yes")
 					end
-				until (HRP.Position - Target.p).magnitude <= 25
-					or ForceStop
-					or not getgenv().Settings.Autofarm.Toggle
-				if (HRP.Position - Target.p).magnitude <= 25 then
-					_G.Played = false
 				end
+				HRP.CFrame = CFrame.new(Target.p)
+					* CFrame.new(0, getgenv().Settings.Autofarm.Position, 0)
+					* CFrame.Angles(math.rad(angle), 0, 0)
+				_G.tweening = false
 			end
+		until (not getgenv().Settings.Autofarm.Toggle and not getgenv().Settings.Autoquest)
+			or (HRP.Position - Target.p).magnitude <= 25
+		if (HRP.Position - Target.p).magnitude <= 25 then
+			_G.tweening = false
 		end
-	end
-	if ForceStop then
-		_G.Played = false
-		ForceStop = false
-		return
 	end
 end
 
-local TeleportService = game:GetService("TeleportService")
+---* CFrame.new(0, getgenv().Settings.Autofarm.Position, 0),* CFrame.Angles(math.rad(angle), 0, 0)
+
 local Kisuke
 _G.queued = false
-function autoraid()
-	if getgenv().Settings.Autoraid.Toggle then
-		if game.PlaceId == 14069678431 then
-			Kisuke = Workspace.NPCs.RaidBoss.Kisuke
-			if Kisuke and plr.Character and plr.Character:FindFirstChild("CharacterHandler") then
-				if plr.PlayerGui.MissionsUI.MainFrame.Visible then
-					if not plr:FindFirstChild("Kisuke") then
-						fireclickdetector(Kisuke:FindFirstChildWhichIsA("ClickDetector"))
-					else
-						plr.Kisuke:FireServer("Yes")
-						for i = 0, 1 do
-							if not _G.queued then
-								queue_on_teleport([[
-									local clonef = clonefunction
-									local loading= clonef(loadstring)
-									loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteriadebug/main/Asteriaunreleased"))()
-									]])
-								queue_on_teleport([[
-										repeat task.wait() until getgenv().loaded == true
-										getgenv().Settings = {
-										Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
-										TweenSpeed = 150,
-										Fly = { Toggle = false, Speed = 100 },
-										Speed = { Toggle = false, Speed = 100 },
-										InfJump = false,
-										JumpHeight = 50,
-										Autoraid = { Toggle = true },
-										Noclip = false,
-									}]])
-								_G.queued = true
-							end
-						end
-					end
+_G.Teleporting = false
+
+function karakura()
+	Kisuke = Workspace.NPCs.RaidBoss.Kisuke
+	if not plr.PlayerGui.MissionsUI.MainFrame.Visible then
+		plr.Character.CharacterHandler.Remotes.PartyCreate:FireServer()
+	end
+	if not plr:FindFirstChild("Kisuke") then
+		fireclickdetector(Kisuke:FindFirstChildWhichIsA("ClickDetector"))
+	else
+		if _G.queued then
+			return
+		end
+		plr.Kisuke:FireServer("Yes")
+		queue_on_teleport([[
+				local clonef = clonefunction
+				local loading= clonef(loadstring)
+				loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteria.lol2/main/Loader"))()]])
+		queue_on_teleport([[
+				repeat task.wait() until getgenv().loaded == true
+				getgenv().Settings = {
+				Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
+				TweenSpeed = 150,
+				Fly = { Toggle = false, Speed = 100 },
+				Speed = { Toggle = false, Speed = 100 },
+				InfJump = false,
+				JumpHeight = 50,
+				Autoraid = { Toggle = true },
+				Noclip = false,
+			}]])
+		_G.queued = true
+	end
+end
+
+function switch_places()
+	local serverlist = ReplicatedStorage.Requests.RequestServerList:InvokeServer("Karakura Town")
+	if not serverlist or _G.Teleporting then
+		return
+	end
+
+	if not _G.queued then
+		queue_on_teleport([[
+			local clonef = clonefunction
+			local loading= clonef(loadstring)
+			loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteria.lol2/main/Loader"))()
+		]])
+		queue_on_teleport([[
+			repeat task.wait() until getgenv().loaded == true
+			getgenv().Settings = {
+			Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
+			TweenSpeed = 150,
+			Fly = { Toggle = false, Speed = 100 },
+			Speed = { Toggle = false, Speed = 100 },
+			InfJump = false,
+			JumpHeight = 50,
+			Autoraid = { Toggle = true },
+			Noclip = false,
+		}]])
+		_G.queued = true
+	else
+		for i, v in next, serverlist do
+			plr.Character.CharacterHandler.Remotes.ServerListTeleport:FireServer("Karakura Town", v["JobID"])
+			_G.Teleporting = true
+		end
+	end
+end
+
+local slot = readfile("skill.lua")
+
+function boss_place()
+	for i, v in pairs(Workspace.Entities:GetChildren()) do
+		if not v.Name:match(plr.Name) then
+			if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 65 then
+				plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+					* CFrame.new(0, 9, 0)
+					* CFrame.Angles(math.rad(-90), 0, 0)
+				plr.Character.HumanoidRootPart.Velocity = Vector3.new()
+				if plr.Character:FindFirstChild("Zanpakuto") then
+					plr.Character.CharacterHandler.Remotes.Weapon:FireServer()
+				end
+				combat:FireServer("LightAttack")
+				getgenv().skill = slot
+				if getgenv().skill then
+					local ohString1 = getgenv().skill
+					local ohString2 = "Released"
+					plr.Character.CharacterHandler.Remotes.Skill:FireServer(ohString1, ohString2)
 				else
-					plr.Character.CharacterHandler.Remotes.PartyCreate:FireServer()
-				end
-			end
-		elseif game.PlaceId == 17047374266 then
-			for i, v in next, Workspace.Entities:GetChildren() do
-				if v.Name ~= plr.Name and v:FindFirstChild("Head") then
-					plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
-						* CFrame.new(0, 10, 0)
-						* CFrame.Angles(math.rad(-90), 0, 0)
-					
-
-					v.Head:Destroy()
-					task.wait()
-					v.Humanoid.Health = 0
-
-				end
-			end
-			for i = 0, 1 do
-				if not _G.queued then
-					queue_on_teleport([[
-						local clonef = clonefunction
-						local loading= clonef(loadstring)
-						loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteriadebug/main/Asteriaunreleased"))()
-						]])
-					queue_on_teleport([[
-						repeat task.wait() until getgenv().loaded == true
-						getgenv().Settings = {
-						Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
-						TweenSpeed = 150,
-						Fly = { Toggle = false, Speed = 100 },
-						Speed = { Toggle = false, Speed = 100 },
-						InfJump = false,
-						JumpHeight = 50,
-						Autoraid = { Toggle = true },
-						Noclip = false,
-					}]])
-					_G.queued = true
+					print("Failed to get the slot")
 				end
 			end
 		else
+			if _G.queued then
+				return
+			end
 			queue_on_teleport([[
-						local clonef = clonefunction
-						local loading= clonef(loadstring)
-						loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteriadebug/main/Asteriaunreleased"))()
-						]])
+				local clonef = clonefunction
+				local loading= clonef(loadstring)
+				loading(game:HttpGet("https://raw.githubusercontent.com/mac2115/Asteria.lol2/main/Loader"))()
+			]])
 			queue_on_teleport([[
-						repeat task.wait() until getgenv().loaded == true
-						getgenv().Settings = {
-						Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
-						TweenSpeed = 150,
-						Fly = { Toggle = false, Speed = 100 },
-						Speed = { Toggle = false, Speed = 100 },
-						InfJump = false,
-						JumpHeight = 50,
-						Autoraid = { Toggle = true },
-						Noclip = false,
-					}]])
-			TeleportService:Teleport(14069678431)
+				repeat task.wait() until getgenv().loaded == true
+				getgenv().Settings = {
+				Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
+				TweenSpeed = 150,
+				Fly = { Toggle = false, Speed = 100 },
+				Speed = { Toggle = false, Speed = 100 },
+				InfJump = false,
+				JumpHeight = 50,
+				Autoraid = { Toggle = true },
+				Noclip = false,
+			}]])
+			_G.queued = true
 		end
+	end
+end
+
+local places = {}
+
+places[14069678431] = function()
+	karakura()
+end
+
+places[17047374266] = function()
+	boss_place()
+end
+
+function autoraid()
+	if not getgenv().Settings.Autoraid.Toggle or not plr.Character then
+		return
+	end
+	if places[game.PlaceId] then
+		places[game.PlaceId]()
+	else
+		switch_places()
 	end
 end
 
 function getmob()
 	local max = math.huge
 	local mob
-	if getgenv().Settings.Autofarm.Toggle then
-		for i, v in pairs(Workspace.Entities:GetChildren()) do
-			if
-				string.find(v.Name, getgenv().Settings.Autofarm.Mob)
-				and v.Humanoid.Health > 0
-				and v:FindFirstChildWhichIsA("Part")
-			then
-				local dist = (plr.Character.HumanoidRootPart.Position - v:GetPivot().Position).magnitude
-				if dist <= max then
-					max = dist
-					mob = v
-				end
+	for i, v in pairs(Workspace.Entities:GetChildren()) do
+		if
+			string.find(v.Name, getgenv().Settings.Autofarm.Mob)
+			and v.Humanoid.Health > 0
+			and v:FindFirstChildWhichIsA("Part")
+		then
+			local dist = (plr.Character.HumanoidRootPart.Position - v:GetPivot().Position).magnitude
+			if dist <= max then
+				max = dist
+				mob = v
 			end
 		end
-		return mob
 	end
+	return mob
 end
 
+--//AUTOFARMS
 function autolootbox() end
 
 function autofarm()
+	if not getgenv().Settings.Autofarm.Toggle then
+		_G.tweening = false
+		return
+	end
 	local mob = getmob()
 	if mob then
 		Tween(mob.HumanoidRootPart.CFrame * CFrame.new(0, getgenv().Settings.Autofarm.Position, 0), mob)
@@ -234,6 +267,74 @@ function autofarm()
 	end
 end
 
+function get_quest_mob()
+	local max = math.huge
+	local mob
+	for i, v in pairs(Workspace.Entities:GetChildren()) do
+		if
+			v:FindFirstChild("HumanoidRootPart")
+			and v:FindFirstChildWhichIsA("Humanoid")
+			and v:FindFirstChild("Highlight")
+		then
+			local dist = (plr.Character:GetPivot().Position - v:GetPivot().Position).magnitude
+			if dist <= max then
+				max = dist
+				mob = v
+			end
+		end
+	end
+	return mob
+end
+
+function get_board()
+	local max = math.huge
+	local mob
+	if not getgenv().Settings.Autoquest then
+		return
+	end
+	for i, v in pairs(Workspace.NPCs.MissionNPC:GetChildren()) do
+		if v:IsA("Model") then
+			local dist = (plr.Character.HumanoidRootPart.Position - v:GetPivot().Position).magnitude
+			if dist <= max then
+				max = dist
+				mob = v
+			end
+		end
+	end
+	return mob
+end
+
+function autoquest()
+	if
+		not plr.Character
+		or not plr.Character:FindFirstChild("HumanoidRootPart")
+		or not getgenv().Settings.Autoquest
+	then
+		return
+	end
+	if plr.PlayerGui.MissionsUI.MainFrame.Visible then
+		if plr.PlayerGui.QueueUI.Enabled then
+			local mob = get_quest_mob()
+			if not mob then
+				ForceStop = true
+			else
+				ForceStop = false
+				Tween(mob.HumanoidRootPart.CFrame * CFrame.new(0, getgenv().Settings.Autofarm.Position, 0), mob)
+				if plr.Character:FindFirstChild("Zanpakuto") then
+					plr.Character.CharacterHandler.Remotes.Weapon:FireServer()
+				end
+				combat:FireServer("LightAttack")
+			end
+		elseif not plr.PlayerGui.MissionsUI.Queueing.Visible and not plr.PlayerGui.QueueUI.Enabled then
+			local board = get_board()
+			Tween(board:GetPivot(), board)
+		end
+	else
+		plr.Character.CharacterHandler.Remotes.PartyCreate:FireServer()
+	end
+end
+
+--//MISC
 local UserInputService = game:GetService("UserInputService")
 local walkie = nil
 
@@ -357,51 +458,48 @@ function fly()
 	end
 end
 
-local characterparts = {}
-
-do
-	if plr.Character then
-		for i, v in pairs(plr.Character:GetChildren()) do
-			if v:IsA("Part") and not table.find(characterparts, v) then
-				table.insert(characterparts, v)
+function noclip()
+	if getgenv().Settings.Noclip then
+		if plr.Character then
+			for i, v in next, plr.Character:GetChildren() do
+				if v:IsA("Part") and not string.find(v.Name, "Leg") then
+					v.CanCollide = false
+				end
+			end
+		end
+	else
+		if plr.Character then
+			for i, v in next, plr.Character:GetChildren() do
+				if v:IsA("Part") and not string.find(v.Name, "Leg") then
+					v.CanCollide = true
+				end
 			end
 		end
 	end
 end
 
-plr.CharacterAdded:Connect(function(Char)
-	characterparts = {}
-	for i, v in pairs(Char:GetChildren()) do
-		if v:IsA("Part") and not table.find(characterparts, v) then
-			table.insert(characterparts, v)
-		end
-	end
-end)
+--///Stuff
 
-plr.CharacterRemoving:Connect(function(char)
-	characterparts = {}
-end)
-
-function noclip()
-	if getgenv().Settings.Noclip then
-		for i, v in characterparts do
-			v.CanCollide = false
-		end
-	else
-		for i, v in characterparts do
-			v.CanCollide = true
+function getfunc()
+	for i, v in pairs(getgc()) do
+		if
+			type(v) == "function"
+			and debug.info(v, "l") == 2242
+			and string.find(debug.info(v, "s"), "ClientHandler")
+		then
+			return v
 		end
 	end
 end
 
---ui
+--//UI
 local repo = "https://raw.githubusercontent.com/HTDBarsi/LinoriaLib/main/"
 
 local Library = loading(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loading(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loading(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 local Window = Library:CreateWindow({
-	Title = "Asteria.lol v1.0.3",
+	Title = "Asteria.lol",
 	Center = true,
 	AutoShow = true,
 	TabPadding = 8,
@@ -415,15 +513,29 @@ local Tabs = {
 	["UI Settings"] = Window:AddTab("UI Settings"),
 }
 
-local LeftGroupBox = Tabs.Main:AddLeftGroupbox("Combat ")
-
+local LeftGroupBox = Tabs.Main:AddLeftGroupbox("Main")
 LeftGroupBox:AddToggle("MyToggle", {
 	Text = "Autoraid toggle",
 	Default = false,
 	Tooltip = "",
 
 	Callback = function(Value)
+		_G.Teleporting = false
 		getgenv().Settings.Autoraid.Toggle = Value
+	end,
+})
+
+LeftGroupBox:AddDropdown("MyDropdown", {
+	Values = { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Zero" },
+	Default = 1, -- number index of the value / string
+	Multi = false, -- true / false, allows multiple choices to be selected
+
+	Text = "Self Heal slot:",
+	Tooltip = "", -- Information shown when you hover over the dropdown
+
+	Callback = function(Value)
+		getgenv().skill = Value
+		writefile("skill.lua", getgenv().skill)
 	end,
 })
 
@@ -434,6 +546,16 @@ LeftGroupBox:AddToggle("MyToggle", {
 
 	Callback = function(Value)
 		getgenv().Settings.Autofarm.Toggle = Value
+	end,
+})
+
+LeftGroupBox:AddToggle("MyToggle", {
+	Text = "Autoquest toggle",
+	Default = false,
+	Tooltip = "",
+
+	Callback = function(Value)
+		getgenv().Settings.Autoquest = Value
 	end,
 })
 
@@ -573,11 +695,13 @@ Library:OnUnload(function()
 	WatermarkConnection:Disconnect()
 	getgenv().Settings = {
 		Autofarm = { Toggle = false, Mob = "Fishbone", Position = -10 },
-		TweenSpeed = 100,
+		TweenSpeed = 150,
 		Fly = { Toggle = false, Speed = 100 },
 		Speed = { Toggle = false, Speed = 100 },
 		InfJump = false,
 		JumpHeight = 50,
+		Autoraid = { Toggle = false },
+		Noclip = false,
 	}
 	print("Unloaded!")
 	Library.Unloaded = true
@@ -628,20 +752,14 @@ ThemeManager:ApplyToTab(Tabs["UI Settings"])
 
 SaveManager:LoadAutoloadConfig()
 
-task.spawn(function()
-	RunService.RenderStepped:Connect(function()
-		fly()
-		speed()
-		noclip()
-		infjump()
-		autofarm()
-	end)
-end)
-
-task.spawn(function()
-	RunService.Heartbeat:Connect(function()
-		autoraid()
-	end)
+RunService.Heartbeat:Connect(function()
+	fly()
+	speed()
+	noclip()
+	infjump()
+	autofarm()
+	autoraid()
+	autoquest()
 end)
 
 getgenv().loaded = true
