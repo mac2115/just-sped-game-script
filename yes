@@ -171,7 +171,7 @@ end
 _G.healing = false
 function boss_place()
 	for i, v in pairs(Workspace.Entities:GetChildren()) do
-		if v ~= plr.Character then
+		if v then
 			if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 55 then
 				print(v.Name)
 				plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
@@ -227,13 +227,14 @@ places[14069678431] = function()
 	karakura()
 end
 
-places[17047374266] = function()
-	boss_place()
-end
+
 
 function autoraid()
 	if not getgenv().Settings.Autoraid.Toggle or not plr.Character then
 		return
+	end
+	if game.PlaceId == 17047374266 then
+		boss_place()
 	end
 	if places[game.PlaceId] then
 		places[game.PlaceId]()
