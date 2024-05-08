@@ -171,7 +171,7 @@ end
 _G.healing = false
 function boss_place()
 	for i, v in pairs(Workspace.Entities:GetChildren()) do
-		if v.Name ~= plr.Name then
+		if v ~= plr.Character then
 			if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 55 then
 				print(v.Name)
 				plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
@@ -195,7 +195,7 @@ function boss_place()
 				end
 			end
 		else
-			print('Cooler')
+			print("Mob not found")
 			if _G.queued then
 				return
 			end
