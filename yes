@@ -169,6 +169,7 @@ end
 
 _G.healing = false
 function boss_place()
+	print('attackin')
 	for i, v in pairs(Workspace.Entities:GetChildren()) do
 		if v.Name ~= plr.Name  then
 			if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 55 then
@@ -180,12 +181,12 @@ function boss_place()
 				if plr.Character:FindFirstChild("Zanpakuto") then
 					plr.Character.CharacterHandler.Remotes.Weapon:FireServer()
 				end
+				combat:FireServer("LightAttack")
 				if _G.healing and getgenv().skill then
 					ReplicatedStorage.Remotes.ServerCombatHandler:FireServer("Skill", getgenv().skill, "Released")
 					plr.Character.CharacterHandler.Remotes.Skill:FireServer(getgenv().skill, "Released")
 					_G.healing = false
 				end
-				combat:FireServer("LightAttack")
 				if getgenv().skill and not _G.healing then
 					ReplicatedStorage.Remotes.ServerCombatHandler:FireServer("Skill", getgenv().skill, "Pressed")
 					_G.healing = true
