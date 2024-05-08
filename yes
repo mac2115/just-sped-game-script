@@ -170,7 +170,7 @@ end
 _G.healing = false
 function boss_place()
 	for i, v in pairs(Workspace.Entities:GetChildren()) do
-		if not v.Name:match(plr.Name) then
+		if v.Name ~= plr.Name  then
 			if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 55 then
 				getgenv().skill = slot
 				plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
