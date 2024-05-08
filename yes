@@ -1,7 +1,7 @@
 repeat
 	task.wait()
 until game:IsLoaded()
-print('yay'
+
 --THATS PROBABLY THE WORST CODE U WILL EVER SEE LOLLL DONT LOOK LMFAOOO
 
 getgenv().loaded = false
@@ -234,8 +234,10 @@ function autoraid()
 		return
 	end
 	if places[game.PlaceId] then
+		print('gotit')
 		places[game.PlaceId]()
 	else
+		print('switching')
 		switch_places()
 	end
 end
