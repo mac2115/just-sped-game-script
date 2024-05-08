@@ -158,13 +158,13 @@ function switch_places()
 	end
 end
 
-local slot = readfile("skill.lua")
+local slot = tostring(readfile("skill.lua"))
 
 _G.healing = false
 function boss_place()
 	for i, v in pairs(Workspace.Entities:GetChildren()) do
 		if not v.Name:match(plr.Name) then
-			if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 55 then
+			if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 60 then
 				getgenv().skill = slot
 				plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
 					* CFrame.new(0, 9, 0)
