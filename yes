@@ -188,6 +188,9 @@ function boss_place()
 					_G.healing = false
 				end
 			else
+				plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+					* CFrame.new(0, 50, 0)
+					* CFrame.Angles(math.rad(-90), 0, 0)
 				getgenv().skill = slot
 				if getgenv().skill and not _G.healing then
 					ReplicatedStorage.Remotes.ServerCombatHandler:FireServer("Skill", getgenv().skill, "Pressed")
@@ -224,12 +227,13 @@ places[14069678431] = function()
 	karakura()
 end
 
+places[17047374266] = function()
+	boss_place()
+end
+
 function autoraid()
 	if not getgenv().Settings.Autoraid.Toggle or not plr.Character then
 		return
-	end
-	if game.PlaceId == 17047374266 then
-		boss_place()
 	end
 	if places[game.PlaceId] then
 		places[game.PlaceId]()
