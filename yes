@@ -511,7 +511,7 @@ local Library = loading(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loading(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loading(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 local Window = Library:CreateWindow({
-	Title = "Asteria.lol",
+	Title = "Asteria.lol | Type Soul",
 	Center = true,
 	AutoShow = true,
 	TabPadding = 8,
@@ -694,7 +694,7 @@ local WatermarkConnection = game:GetService("RunService").RenderStepped:Connect(
 	end
 
 	Library:SetWatermark(
-		("Asteria.lol beta | %s fps | %s ms"):format(
+		("Asteria.lol | %s fps | %s ms"):format(
 			math.floor(FPS),
 			math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue())
 		)
