@@ -158,7 +158,14 @@ function switch_places()
 	end
 end
 
-local slot = tostring(readfile("skill.lua"))
+local slot
+do
+	for i, v in pairs(listfiles("")) do
+		if string.find(tostring(v), "skill") then
+			slot = tostring(readfile(v))
+		end
+	end
+end
 
 _G.healing = false
 function boss_place()
