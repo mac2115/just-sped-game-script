@@ -227,14 +227,37 @@ places[14069678431] = function()
 	karakura()
 end
 
-
-
 function autoraid()
 	if not getgenv().Settings.Autoraid.Toggle or not plr.Character then
 		return
 	end
 	if game.PlaceId == 17047374266 then
-		boss_place()
+		for i, v in pairs(Workspace.Entities:GetChildren()) do
+			if v ~= plr.Character then
+				if (plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth) * 100 >= 55 then
+					print(v.Name)
+					plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
+						* CFrame.new(0, 9, 0)
+						* CFrame.Angles(math.rad(-90), 0, 0)
+					plr.Character.HumanoidRootPart.Velocity = Vector3.new()
+					if plr.Character:FindFirstChild("Zanpakuto") then
+						plr.Character.CharacterHandler.Remotes.Weapon:FireServer()
+					end
+					combat:FireServer("LightAttack")
+					if _G.healing and getgenv().skill then
+						ReplicatedStorage.Remotes.ServerCombatHandler:FireServer("Skill", getgenv().skill, "Released")
+						plr.Character.CharacterHandler.Remotes.Skill:FireServer(getgenv().skill, "Released")
+						_G.healing = false
+					end
+				else
+					getgenv().skill = slot
+					if getgenv().skill and not _G.healing then
+						ReplicatedStorage.Remotes.ServerCombatHandler:FireServer("Skill", getgenv().skill, "Pressed")
+						_G.healing = true
+					end
+				end
+			end
+		end
 	end
 	if places[game.PlaceId] then
 		places[game.PlaceId]()
